@@ -1,0 +1,13 @@
+.rc-dropdown-menu > .rc-dropdown-menu-item:hover, .rc-dropdown-menu > .rc-dropdown-menu-item-active, .rc-dropdown-menu > .rc-dropdown-menu-item-selected {
+    background-color: white;
+}
+
+.rc-dropdown-menu > .rc-dropdown-menu-item-selected:after {
+    content: '.';
+    font-family: 'anticon';
+    font-weight: bold;
+    position: absolute;
+    top: 6px;
+    right: 16px;
+    color: transparent;
+}

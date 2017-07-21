@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /app/,
+        //include: /app/,
         //loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
         loaders: [
           'style-loader',
