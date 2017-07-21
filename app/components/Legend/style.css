@@ -1,0 +1,128 @@
+#legend {
+  display: block;
+  position: absolute;
+  left: 25px;
+  bottom: 20px;
+  margin: 0;
+  padding: 18px 24px;
+  list-style-type: none;
+  background-color: rgba(#fff, 0.6);
+  border-radius: 4px;
+
+  li {
+    display: block;
+    line-height: 18px;
+    font-size: 12px;
+    h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 22px;
+      margin-bottom: 6px;
+    }
+    &:last-child {
+      margin-top: 6px;
+    }
+
+    span.legend-icon {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 8px;
+      height: 8px;
+      margin-right: 4px;
+
+      &.buildings {
+        background-color: #FDB863;
+        border-color: #E08214;
+
+        &.feature {
+          border-style: solid;
+          border-width: 1px;
+          transform: translateX(-2px) rotate(24deg);
+        }
+        &.high {
+          opacity: 1.0;
+        }
+        &.mid {
+          opacity: 0.55;
+        }
+        &.low {
+          opacity: 0.1;
+        }
+      }
+
+      &.highways {
+        background-color: #9e9ac8;
+        border-color: #9e9ac8;
+
+        &.feature {
+          background-color: transparent;
+          border-style: solid;
+          border-width: 2px;
+          border-top-width: 0;
+          border-left-width: 0;
+          transform: translateX(-2px) rotate(-20deg);
+        }
+        &.high {
+          opacity: 1.0;
+        }
+        &.mid {
+          opacity: 0.55;
+        }
+        &.low {
+          opacity: 0.1;
+        }
+      }
+
+      &.waterways {
+        background-color: #c89ab7;
+        border-color: #c89ab7;
+
+        &.feature {
+          background-color: transparent;
+          border-style: solid;
+          border-width: 2px;
+          border-top-width: 0;
+          border-left-width: 0;
+          transform: translateX(-2px) rotate(-20deg);
+        }
+        &.high {
+          opacity: 1.0;
+        }
+        &.mid {
+          opacity: 0.55;
+        }
+        &.low {
+          opacity: 0.1;
+        }
+      }
+
+      &.pois {
+        background-color: #FF0000;
+
+        &.feature {
+          border-radius: 4px;
+        }
+        &.high {
+          opacity: 1.0;
+        }
+        &.mid {
+          opacity: 0.55;
+        }
+        &.low {
+          opacity: 0.1;
+        }
+      }
+
+      &.highlight {
+        background-color: #5CBAD8;
+        border-color: #5CBAD8;
+      }
+
+      &.hot-projects {
+        border-color: #3388FF;
+        border-width: 2px;
+        border-style: solid;
+      }
+    }
+  }
+}
