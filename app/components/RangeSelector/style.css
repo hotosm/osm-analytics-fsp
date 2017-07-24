@@ -1,0 +1,10 @@
+.rc-slider-track{
+    height: 25px;
+    border-radius: 0;
+    margin-top: -25px;
+    background-color: rgba(188, 227, 233, 0.5);
+}
+
+.rc-slider-mark-text{
+    color: white;
+}

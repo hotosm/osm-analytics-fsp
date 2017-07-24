@@ -36,7 +36,7 @@ class App extends Component {
         {map}
         {route.view === 'country' ? <Stats mode={routeParams.overlay}/> : ''}
         {route.view === 'compare' ? <CompareBar times={routeParams.times}/> : ''}
-        {route.view === 'fsp' ? <FSPBar times={routeParams.times}/> : ''}
+        {route.view === 'fsp' ? <FSPBar routeParams={routeParams}/> : ''}
       </div>
     )
   }

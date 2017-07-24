@@ -96,6 +96,7 @@ class FSPMap extends Component {
         } catch(e) {}
     }
 }
+
 function mapStateToProps(state) {
     return {
         map: state.map,

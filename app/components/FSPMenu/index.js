@@ -29,7 +29,7 @@ class FSPMenu extends Component {
     }
 
     getDefaultView() {
-        return 'fspug/qn1';
+        return 'uganda/qn1';
     }
 
     handleDropdownChanges(selectedFilters) {
@@ -88,7 +88,7 @@ class FSPMenu extends Component {
 
 const options = [
     {
-        id: 'fspug',
+        id: 'uganda',
         description: 'Financial Services Uganda',
         subMenu: [
             {
@@ -110,7 +110,7 @@ const options = [
         ]
     },
     {
-        id: 'fspkenya',
+        id: 'kenya',
         description: 'Financial Services Kenya'
     }
 ];
