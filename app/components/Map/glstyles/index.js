@@ -2,6 +2,8 @@ import buildings from './buildings.json'
 import highways from './highways.json'
 import waterways from './waterways.json'
 import pois from './pois.json'
+import mobilemoney from './mobilemoney.json'
+import generic from './generic.json'
 
 import settings from '../../../settings/settings'
 import { filters as filterOptions } from '../../../settings/options'
@@ -15,6 +17,8 @@ export default function getStyle(filters, options) {
     buildings,
     highways,
     waterways,
+    mobilemoney,
+    generic,
     pois
   }
   var allSources = {}
@@ -57,9 +61,6 @@ export default function getStyle(filters, options) {
         return 0
       })
   }
-  buildings,
-  highways,
-  waterways
 }
 
 export function getCompareStyles(filters, compareTimes) {

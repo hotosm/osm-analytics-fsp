@@ -23,7 +23,7 @@ class App extends Component {
       )
       return <p style="text-align:center;">Loading…</p>
     }
-      const map = route.view === 'fsp' ? <FSPMap/> : <Map
+      const map = route.view === 'fsp' ? <FSPMap routeParams={routeParams}/> : <Map
           region={routeParams.region}
           filters={routeParams.filters}
           overlay={routeParams.overlay}

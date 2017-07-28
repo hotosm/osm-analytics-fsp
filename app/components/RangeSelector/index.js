@@ -63,7 +63,7 @@ class RangeSelector extends Component {
                 max={max}
                 defaultValue={selection}
                 pushable
-                onChange={onSelectionChanged}
+                //onChange={onSelectionChanged}
                 onAfterChange={onSelectionChanged}
                 handleStyle={[
                     handleStyle,

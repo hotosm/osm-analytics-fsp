@@ -60,6 +60,7 @@
     "webpack-hot-middleware": "^2.7.1"
   },
   "dependencies": {
+    "leaflet.markercluster": "^1.0.6",
     "rc-slider": "^8.2.0"
   }
 }

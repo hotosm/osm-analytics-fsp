@@ -13,9 +13,9 @@ import * as StatsActions from '../../actions/stats'
 class FSPBar extends Component {
     constructor(props) {
         super(props);
-        const {routeParams: {country, activity}} = props;
+        const {routeParams: {country, question}} = props;
         this.state = {
-            data: config[country][activity]
+            data: config[country][question]
         };
     }
 
@@ -26,14 +26,14 @@ class FSPBar extends Component {
         }
     }
 
-    loadControls({country, activity}) {
+    loadControls({country, question}) {
 
-        this.setState({data: config[country][activity]});
+        this.setState({data: config[country][question]});
     }
 
-    onRangeChanged(country, activity, id, selection) {
-        console.log("On range changed", {country, activity, id, selection});
-        const data = config[country][activity];
+    onRangeChanged(country, question, id, selection) {
+        console.log("On range changed", {country, question, id, selection});
+        const data = config[country][question];
         const controls = data.controls.map(ctr => {
             if (ctr.id === id) {
                 const range = {...ctr.range,selection};
@@ -42,10 +42,12 @@ class FSPBar extends Component {
                 return {...ctr};
         });
         this.setState({data: {...data, controls}});
+        this.props.statsActions.setFSPFilter({country, question, id, selection});
     }
 
     render() {
-        const {country, activity} = this.props.routeParams;
+        console.log("Route Params",this.props.routeParams);
+        const {country, question} = this.props.routeParams;
         const {data: {title, controls}} = this.state;
         return <div id="fspbar">
             <div style={{color: 'white', fontSize: 24, padding: 15, paddingBottom: 0}}>
@@ -65,7 +67,7 @@ class FSPBar extends Component {
                                                label={label}
                                                range={range}
                                                onSelectionChanged={(range) => {
-                                                   this.onRangeChanged(country, activity, id, range);
+                                                   this.onRangeChanged(country, question, id, range);
                                                }}
                                 />
                             </div>
@@ -79,29 +81,29 @@ class FSPBar extends Component {
 
 const config = {
     uganda: {
-        qn1: {
+        mobilemoney: {
             title: 'Mobile money agents in relation to population and economic activity',
             controls: [
                 {
-                    id: 1,
+                    id: 'peoplePerAgent',
                     type: 'range',
                     title: 'People per agent',
                     label: 'people',
                     range: {max: 1000, min: 0, selection: [300, 750]}
                 },
                 {
-                    id: 2,
+                    id: 'population',
                     type: 'range',
                     title: 'Population density',
                     label: 'people/cell (,000)',
                     range: {max: 10, min: 0, selection: [2, 6]}
                 },
                 {
-                    id: 3,
+                    id: 'economic',
                     type: 'range',
                     title: 'Economic activity',
                     label: '(1 : Low , 8 : High)',
-                    range: {max: 1000, min: 0, selection: [2, 4]}
+                    range: {max: 8, min: 0, selection: [2, 4]}
                 }
             ]
         },
@@ -109,14 +111,14 @@ const config = {
             title: 'Show mobile money agents that are (at least) a distance from a bank or ATM',
             controls: [
                 {
-                    id: 1,
+                    id: "distance-from-bank",
                     type: 'range',
                     title: 'Distance from banks',
                     label: '(,000 meters)',
                     range: {max: 1000, min: 0, selection: [300, 750]}
                 },
                 {
-                    id: 2,
+                    id: "distance-from-atm",
                     type: 'range',
                     title: 'Distance from ATM',
                     label: '(,000 meters)',
@@ -128,18 +130,18 @@ const config = {
             title: 'Show location of selected banks in relation to population density and economic activity',
             controls: [
                 {
-                    id: 1,
+                    id: 'population',
                     type: 'range',
                     title: 'Population density',
                     label: 'people/cell (,000)',
                     range: {max: 10, min: 0, selection: [2, 6]}
                 },
                 {
-                    id: 2,
+                    id: 'economic',
                     type: 'range',
                     title: 'Economic activity',
                     label: '(1 : Low , 8 : High)',
-                    range: {max: 1000, min: 0, selection: [2, 4]}
+                    range: {max: 8, min: 0, selection: [2, 4]}
                 }
             ]
         },

@@ -92,7 +92,7 @@ const options = [
         description: 'Financial Services Uganda',
         subMenu: [
             {
-                id: 'qn1',
+                id: 'mobilemoney',
                 description: 'Mobile Money Agents'
             },
             {
