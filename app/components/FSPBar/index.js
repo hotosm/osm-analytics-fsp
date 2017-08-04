@@ -89,21 +89,21 @@ const config = {
                     type: 'range',
                     title: 'People per agent',
                     label: 'people',
-                    range: {max: 1000, min: 0, selection: [300, 750]}
+                    range: {max: 4000, min: 0, selection: [0, 4000]}
                 },
                 {
                     id: 'population',
                     type: 'range',
                     title: 'Population density',
                     label: 'people/cell (,000)',
-                    range: {max: 10, min: 0, selection: [2, 6]}
+                    range: {max: 15000, min: 0, selection: [0, 2500]}
                 },
                 {
                     id: 'economic',
                     type: 'range',
                     title: 'Economic activity',
-                    label: '(1 : Low , 8 : High)',
-                    range: {max: 8, min: 0, selection: [2, 4]}
+                    label: '(1 : Low , 10 : High)',
+                    range: {max: 10, min: 0, selection: [0, 8]}
                 }
             ]
         },

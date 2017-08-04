@@ -76,6 +76,16 @@ class FSPMap extends Component {
             hash: false
         }).addTo(map);
 
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        glLayer._glMap.on('mouseenter', 'places', function () {
+            glLayer._glMap.getCanvas().style.cursor = 'pointer';
+        });
+
+        // Change it back to a pointer when it leaves.
+        glLayer._glMap.on('mouseleave', 'places', function () {
+            glLayer._glMap.getCanvas().style.cursor = '';
+        });
+        this.addPopupOnClick(question);
         /*
          request
          .get('http://127.0.0.1:8080/mmout.json')
@@ -140,6 +150,21 @@ class FSPMap extends Component {
     loadMapStyle({country, question}) {
         console.log("New map to load", {country, question});
         glLayer._glMap.setStyle(glStyles([question]), {diff: false});
+        this.addPopupOnClick(question);
+    }
+
+    addPopupOnClick(question){
+        const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/)).map(layer=>layer.id);
+        console.log("Setting click on layers: ",layers);
+        layers.forEach(layer=>{
+            glLayer._glMap.on('click', layer, function (e) {
+                console.log("On Click",e);
+                const pop = new mapboxgl.Popup()
+                    .setLngLat(e.features[0].geometry.coordinates)
+                    .setHTML(e.features[0].properties.description)
+                    .addTo(glLayer._glMap);
+            });
+        });
     }
 
     setFilter(filter) {
@@ -163,6 +188,7 @@ class FSPMap extends Component {
                 return !Array.isArray(f) || f[1] !== property;
             });
             const filter = [...newFilter, [">=", property, selection[0]], ["<=", property, selection[1]]];
+            console.log(filter);
             glLayer._glMap.setFilter(layer.id, filter)
         });
 
