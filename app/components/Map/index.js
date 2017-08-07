@@ -83,7 +83,7 @@ class Map extends Component {
       updateInterval: 0,
       style: glStyles(this.props.map.filters),
       hash: false
-    })
+    });
 
     const glCompareLayerStyles = getCompareStyles(this.props.map.filters, this.props.map.times)
     glCompareLayers = {
@@ -97,7 +97,7 @@ class Map extends Component {
         style: glCompareLayerStyles.after,
         hash: false
       })
-    }
+    };
 
     // add glLayers if map state is already initialized
     if (this.props.map.view === 'country' || this.props.map.view === 'default') {

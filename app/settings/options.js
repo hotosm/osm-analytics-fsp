@@ -14,6 +14,16 @@ export const filters = [
     description: 'Rivers',
     altText: 'Lines with a waterway=* tag (waterways, rivers & streams)'
   },
+    {
+        id: 'mobilemoney',
+        description: 'Mobile Money',
+        altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
+    },
+    {
+        id: 'generic',
+        description: 'Generic',
+        altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
+    },
   {
     id: 'pois',
     description: 'POIs',

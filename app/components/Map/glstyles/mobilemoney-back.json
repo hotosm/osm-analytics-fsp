@@ -1,0 +1,359 @@
+{
+  "version": 8,
+  "sources": {
+    "osm-mobilemoney-raw": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 13,
+      "maxzoom": 14
+    },
+    "osm-mobilemoney-aggregated": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 0,
+      "maxzoom": 12
+    }
+  },
+  "layers": [
+    {
+      "id": "mobilemoney-raw",
+      "type": "fill",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-opacity": 1,
+        "fill-outline-color": "#E08214"
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Polygon"
+      ]
+    },
+    {
+      "id": "mobilemoney-raw-road",
+      "type": "line",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "line-width": 1,
+        "line-color": "#9e9ac8",
+        "line-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "LineString"
+      ]
+    },
+    {
+      "id": "mobilemoney-raw-mm",
+      "type": "circle",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "circle-color": "#FF0000",
+        "circle-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Point"
+      ]
+    },
+    {
+      "id": "mobilemoney-raw-highlight",
+      "type": "fill",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-opacity": 1
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-0",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              0.2
+            ],
+            [
+              13,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          1
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          50
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-1",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              8,
+              0.2
+            ],
+            [
+              11,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          50
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          200
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-2",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              6,
+              0.2
+            ],
+            [
+              9,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          200
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          800
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-3",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              4,
+              0.2
+            ],
+            [
+              7,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          800
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          3200
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-4",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              2,
+              0.2
+            ],
+            [
+              5,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          3200
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          12800
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-5",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              0.2
+            ],
+            [
+              3,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          12800
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          51200
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-6",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          51200
+        ]
+      ]
+    }
+  ]
+}
