@@ -9,6 +9,7 @@ import {connect} from "react-redux";
 import * as MapActions from "../../actions/map";
 import {debounce} from "lodash";
 import regionToCoords from "../Map/regionToCoords";
+import Legend from '../Legend'
 // leaflet plugins
 import "../../libs/leaflet-heat.js";
 import "leaflet.markercluster/dist/leaflet.markercluster.js";
@@ -30,9 +31,16 @@ class FSPMap extends Component {
     state = {};
 
     render() {
+        const {question} = this.props.routeParams;
         return <div className="fspView">
             <div id="map">
             </div>
+            <Legend
+                showHighlight={false}
+                featureType={question}
+                zoom={this.state.mapZoomLevel}
+                hotOverlayEnabled={false}
+            />
         </div>
     }
 
