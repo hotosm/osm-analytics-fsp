@@ -56,7 +56,7 @@ class RangeSelector extends Component {
         return <div style={holder}>
             <div style={titleStyle}>
                 <span>{title}:</span>&nbsp;&nbsp;
-                <span style={{color: 'limegreen', fontSize: 14}}>{`${selection[0]} to ${selection[1]} ${label}` }</span>
+                <span style={{color: '#5abcad', fontSize: 14}}>{`${selection[0]} to ${selection[1]} ${label}` }</span>
             </div>
             <Range
                 min={min}

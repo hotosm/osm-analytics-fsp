@@ -1,0 +1,390 @@
+{
+  "version": 8,
+  "sources": {
+    "osm-mmdistbanks-raw": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mmdistbanks/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 13,
+      "maxzoom": 14
+    },
+    "osm-mmdistbanks-aggregated": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mmdistbanks/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 0,
+      "maxzoom": 12
+    }
+  },
+  "layers": [
+    {
+      "id": "mmdistbanks-raw",
+      "type": "fill",
+      "source": "osm-mmdistbanks-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#510000",
+        "fill-opacity": 1,
+        "fill-outline-color": "#E08214"
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Polygon"
+      ]
+    },
+    {
+      "id": "mmdistbanks-raw-road",
+      "type": "line",
+      "source": "osm-mmdistbanks-raw",
+      "source-layer": "osm",
+      "paint": {
+        "line-width": 1,
+        "line-color": "#9e9ac8",
+        "line-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "LineString"
+      ]
+    },
+    {
+      "id": "mmdistbanks-raw-mm",
+      "type": "circle",
+      "source": "osm-mmdistbanks-raw",
+      "source-layer": "osm",
+      "paint": {
+        "circle-color": "#FF0000",
+        "circle-opacity": 1
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Point"
+        ],
+        [
+          "==",
+          "amenity",
+          "mobile_money_agent"
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-raw-bank",
+      "type": "circle",
+      "source": "osm-mmdistbanks-raw",
+      "source-layer": "osm",
+      "paint": {
+        "circle-color": "#0000FF",
+        "circle-opacity": 1
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Point"
+        ],
+        [
+          "==",
+          "amenity",
+          "mobile_money_agent"
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-raw-highlight",
+      "type": "fill",
+      "source": "osm-mmdistbanks-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-opacity": 1
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-0",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              0.2
+            ],
+            [
+              13,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          1
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          50
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-1",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              8,
+              0.2
+            ],
+            [
+              11,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          50
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          200
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-2",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              6,
+              0.2
+            ],
+            [
+              9,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          200
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          800
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-3",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              4,
+              0.2
+            ],
+            [
+              7,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          800
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          3200
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-4",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              2,
+              0.2
+            ],
+            [
+              5,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          3200
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          12800
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-5",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              0.2
+            ],
+            [
+              3,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          12800
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          51200
+        ]
+      ]
+    },
+    {
+      "id": "mmdistbanks-aggregated-6",
+      "type": "fill",
+      "source": "osm-mmdistbanks-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#510000",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              1.0
+            ],
+            [
+              12,
+              1.0
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          51200
+        ]
+      ]
+    }
+  ]
+}
