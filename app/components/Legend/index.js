@@ -14,31 +14,31 @@ class Legend extends Component {
     var legendEntries = []
     if (this.props.zoom > 13) {
       legendEntries.push(
-        <li><span className={'legend-icon feature '+this.props.featureType}></span>{featureTypeDescription}</li>,
+        <li key="0"><span className={'legend-icon feature '+this.props.featureType}></span>{featureTypeDescription}</li>,
       )
       if(showHighlight)
         legendEntries.push(
-            <li><span className={'legend-icon feature highlight '+this.props.featureType}></span>Highlighted {featureTypeDescription.toLowerCase()}</li>
+            <li key="1"><span className={'legend-icon feature highlight '+this.props.featureType}></span>Highlighted {featureTypeDescription.toLowerCase()}</li>
         )
     } else {
       legendEntries.push(
-        <li><span className={'legend-icon high '+this.props.featureType}></span>High density of {featureTypeDescription.toLowerCase()}</li>,
-        <li><span className={'legend-icon mid '+this.props.featureType}></span>Medium density of {featureTypeDescription.toLowerCase()}</li>,
-        <li><span className={'legend-icon low '+this.props.featureType}></span>Low density of {featureTypeDescription.toLowerCase()}</li>,
+        <li key="2"><span className={'legend-icon high '+this.props.featureType}></span>High density of {featureTypeDescription.toLowerCase()}</li>,
+        <li key="3" ><span className={'legend-icon mid '+this.props.featureType}></span>Medium density of {featureTypeDescription.toLowerCase()}</li>,
+        <li key="4" ><span className={'legend-icon low '+this.props.featureType}></span>Low density of {featureTypeDescription.toLowerCase()}</li>,
       )
       if(showHighlight)
          legendEntries.push(
-             <li><span className={'legend-icon highlight '+this.props.featureType}></span>Area with mostly highlighted {featureTypeDescription.toLowerCase()}</li>
+             <li key="5"><span className={'legend-icon highlight '+this.props.featureType}></span>Area with mostly highlighted {featureTypeDescription.toLowerCase()}</li>
          )
     }
     if (this.props.hotOverlayEnabled) {
       legendEntries.push(
-        <li><span className={'legend-icon hot-projects'}></span>HOT project outline</li>
+        <li key="6"><span className={'legend-icon hot-projects'}></span>HOT project outline</li>
       )
     }
     return (
       <ul id="legend">
-        <li><h3>Map Legend</h3></li>
+        <li><h3>Map Legend Z{this.props.zoom}</h3></li>
         {legendEntries}
         <li>Last Data Update: {this.state.lastModified
         ? <span title={this.state.lastModified}>{moment(this.state.lastModified).fromNow()}</span>

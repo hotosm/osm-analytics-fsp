@@ -33,7 +33,6 @@ class FSPBar extends Component {
     }
 
     onRangeChanged(country, question, id, selection) {
-        console.log("On range changed", {country, question, id, selection});
         const data = config[country][question];
         const controls = data.controls.map(ctr => {
             if (ctr.id === id) {
@@ -47,7 +46,6 @@ class FSPBar extends Component {
     }
 
     render() {
-        console.log("Route Params",this.props.routeParams);
         const {country, question} = this.props.routeParams;
         const {data: {title, controls}} = this.state;
         return <div id="fspbar">
@@ -63,7 +61,7 @@ class FSPBar extends Component {
                 {
                     controls.map(({type, title, label, range, id}) => {
                         return (
-                            <div style={{width: 350, margin: 10}}>
+                            <div key={id} style={{width: 350, margin: 10}}>
                                 <RangeSelector title={title}
                                                label={label}
                                                range={range}

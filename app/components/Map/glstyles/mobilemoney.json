@@ -1,26 +1,97 @@
 {
   "version": 8,
   "sources": {
+    "osm-mobilemoney-raw": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 13,
+      "maxzoom": 14
+    },
     "osm-mobilemoney-aggregated": {
       "type": "vector",
       "tiles": [
         "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
       ],
       "minzoom": 0,
-      "maxzoom": 14
+      "maxzoom": 12
     }
   },
   "layers": [
+    {
+      "id": "mobilemoney-raw",
+      "type": "fill",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-opacity": 1,
+        "fill-outline-color": "#E08214"
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Polygon"
+      ]
+    },
+    {
+      "id": "mobilemoney-raw-road",
+      "type": "line",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "line-width": 1,
+        "line-color": "#9e9ac8",
+        "line-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "LineString"
+      ]
+    },
+    {
+      "id": "mobilemoney-raw-mm",
+      "type": "circle",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "circle-color": "#FF0000",
+        "circle-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Point"
+      ]
+    },
+    {
+      "id": "mobilemoney-raw-highlight",
+      "type": "fill",
+      "source": "osm-mobilemoney-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-opacity": 1
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ]
+    },
+
+
+
     {
       "id": "mobilemoney-aggregated-0",
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.2
+        "fill-color": "#ffe4b2"
       },
       "filter": [
         "all",
@@ -32,7 +103,7 @@
         [
           "<",
           "_noOfMMAgents",
-          50
+          25
         ]
       ]
     },
@@ -41,11 +112,34 @@
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.3
+        "fill-color": "#ffdb99",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_noOfMMAgents",
+          25
+        ],
+        [
+          "<",
+          "_noOfMMAgents",
+          50
+        ]
+      ]
+    },
+    {
+      "id": "mobilemoney-aggregated-2",
+      "type": "fill",
+      "source": "osm-mobilemoney-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffd27f",
+        "fill-antialias": false
       },
       "filter": [
         "all",
@@ -57,32 +151,7 @@
         [
           "<",
           "_noOfMMAgents",
-          100
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-2",
-      "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
-      "source-layer": "osm",
-      "maxzoom": 14.01,
-      "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.4
-      },
-      "filter": [
-        "all",
-        [
-          ">=",
-          "_noOfMMAgents",
-          100
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
-          500
+          75
         ]
       ]
     },
@@ -91,23 +160,22 @@
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.7
+        "fill-color": "#ffc04c",
+        "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
           "_noOfMMAgents",
-          500
+          75
         ],
         [
           "<",
           "_noOfMMAgents",
-          1000
+          100
         ]
       ]
     },
@@ -117,23 +185,22 @@
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.7
+        "fill-color": "#ffae19",
+        "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
           "_noOfMMAgents",
-          1000
+          100
         ],
         [
           "<",
           "_noOfMMAgents",
-          2000
+          125
         ]
       ]
     },
@@ -142,23 +209,22 @@
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.8
+        "fill-color": "#ffa500",
+        "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
           "_noOfMMAgents",
-          2000
+          125
         ],
         [
           "<",
           "_noOfMMAgents",
-          4000
+          150
         ]
       ]
     },
@@ -167,23 +233,22 @@
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 0.9
+        "fill-color": "#cc8400",
+        "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
           "_noOfMMAgents",
-          4000
+          150
         ],
         [
           "<",
           "_noOfMMAgents",
-          6000
+          200
         ]
       ]
     },
@@ -192,25 +257,29 @@
       "type": "fill",
       "source": "osm-mobilemoney-aggregated",
       "source-layer": "osm",
-      "maxzoom": 14.01,
+      "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#FDB863",
-        "fill-antialias": false,
-        "fill-opacity": 1.0
+        "fill-color": "#996300",
+        "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
           "_noOfMMAgents",
-          6000
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
-          8000
+          200
         ]
       ]
     }
+    
   ]
 }
+
+
+
+
+
+
+
+
+

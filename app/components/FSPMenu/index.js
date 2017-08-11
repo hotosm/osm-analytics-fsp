@@ -38,7 +38,6 @@ class FSPMenu extends Component {
         const split = selected.split('/');
         const country = split[0];
         const view = split[1];
-        console.log("stateTo Load", {country, view});
         history.replace(`/fsp/${country}/${view}`);
     }
 

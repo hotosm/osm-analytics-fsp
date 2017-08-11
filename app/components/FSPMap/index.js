@@ -86,15 +86,6 @@ class FSPMap extends Component {
       hash: false
     }).addTo(map)
 
-    // Change the cursor to a pointer when the mouse is over the places layer.
-    glLayer._glMap.on('mouseenter', 'places', function () {
-      glLayer._glMap.getCanvas().style.cursor = 'pointer'
-    })
-
-    // Change it back to a pointer when it leaves.
-    glLayer._glMap.on('mouseleave', 'places', function () {
-      glLayer._glMap.getCanvas().style.cursor = ''
-    })
     this.addPopupOnClick(question)
     /*
      request
@@ -162,14 +153,17 @@ class FSPMap extends Component {
   }
 
   addPopupOnClick (question) {
-    const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/)).map(layer => layer.id)
-    layers.forEach(layer => {
-      glLayer._glMap.on('click', layer, function (e) {
-        console.log('On Click', e)
-        const pop = new mapboxgl.Popup()
-          .setLngLat(e.features[0].geometry.coordinates)
-          .setHTML(e.features[0].properties.description)
-          .addTo(glLayer._glMap)
+    map.on('click', function (e) {
+      const glMap = glLayer._glMap
+      const point = e.layerPoint
+      // to target only some layers, change the options, see documentation:
+      // { layers: ['my-layer-name'] }
+      // https://www.mapbox.com/mapbox-gl-js/api/
+      console.log(point)
+      const options = {}
+      const features = glMap.queryRenderedFeatures([point.x, point.y], options)
+      features.forEach(f => {
+        console.log(f.properties)
       })
     })
   }
@@ -179,7 +173,7 @@ class FSPMap extends Component {
     const {question, id, selection} = filter
     const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
     const controls = fspControls[country][question]['controls']
-    const control = controls.filter(cnt => cnt.id === id)[0];
+    const control = controls.filter(cnt => cnt.id === id)[0]
     let property = control.field
     layers.forEach(layer => {
       const currentFilter = glLayer._glMap.getFilter(layer.id) || []
@@ -187,7 +181,6 @@ class FSPMap extends Component {
         return !Array.isArray(f) || f[1] !== property
       })
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
-      console.log(filter)
       glLayer._glMap.setFilter(layer.id, filter)
     })
   }

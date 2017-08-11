@@ -2,7 +2,7 @@ import buildings from './buildings.json'
 import highways from './highways.json'
 import waterways from './waterways.json'
 import pois from './pois.json'
-import mobilemoney from './mobilemoney-back.json'
+import mobilemoney from './mobilemoney.json'
 import generic from './generic.json'
 import mmdistbanks from './mmdistbanks.json'
 
