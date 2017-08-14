@@ -30,7 +30,9 @@ Array.prototype.flatMap = function (lambda) {
 }
 
 class FSPMap extends Component {
-  state = {}
+  state = {
+    choiceRange: undefined
+  }
 
   render () {
     const {question} = this.props.routeParams
@@ -85,30 +87,7 @@ class FSPMap extends Component {
       style: glStyles([question]),
       hash: false
     }).addTo(map)
-
     this.addPopupOnClick(question)
-    /*
-     request
-     .get('http://127.0.0.1:8080/mmout.json')
-     .set('Accept', 'application/json')
-     .end((err, res)=> {
-     if (err)
-     console.error(err);
-     else {
-     const data = res.body;
-     const markers = L.markerClusterGroup();
-     const geoJsonLayer = L.geoJson(data, {
-     onEachFeature: function (feature, layer) {
-     layer.bindPopup(feature.properties.address);
-     }
-     });
-     markers.addLayer(geoJsonLayer);
-     const heatData = this.createHeatPoints(data);
-     const heat = L.heatLayer(heatData, {radius: 12}).addTo(map);
-     //map.addLayer(markers);
-     }
-     });
-     */
   }
 
   createHeatPoints (data) {
@@ -142,6 +121,9 @@ class FSPMap extends Component {
     if (nextProps.stats.fspFilter !== this.props.stats.fspFilter) {
       this.setFilter(nextProps.stats.fspFilter, nextProps.routeParams)
     }
+    if (nextProps.stats.fspFilterChoice !== this.props.stats.fspFilterChoice) {
+      this.setFilterChoice(nextProps.stats.fspFilterChoice, nextProps.routeParams)
+    }
     if (nextProps.routeParams !== this.props.routeParams) {
       this.loadMapStyle(nextProps.routeParams)
     }
@@ -174,15 +156,25 @@ class FSPMap extends Component {
     const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
     const controls = fspControls[country][question]['controls']
     const control = controls.filter(cnt => cnt.id === id)[0]
-    let property = control.field
+    let property = this.state.choiceRange || control.field
     layers.forEach(layer => {
       const currentFilter = glLayer._glMap.getFilter(layer.id) || []
       const newFilter = currentFilter.filter(f => {
         return !Array.isArray(f) || f[1] !== property
       })
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
+      console.log(filter);
       glLayer._glMap.setFilter(layer.id, filter)
     })
+  }
+
+  setFilterChoice (filter, routeParams) {
+    const {country} = routeParams
+    const {question, id, choice} = filter
+    const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
+    console.log({filter, routeParams})
+    let choiceRange = `_bank_${choice}`
+    this.setState({choiceRange});
   }
 
   mapSetRegion (region) {

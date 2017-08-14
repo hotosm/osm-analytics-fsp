@@ -28,5 +28,10 @@ export default handleActions({
         return Object.assign({}, state, {
             fspFilter: action.payload
         })
-    }
+    },
+  'set fsp_filter choice' (state, action) {
+    return Object.assign({}, state, {
+      fspFilterChoice: action.payload
+    })
+  }
 }, initialState)
