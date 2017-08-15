@@ -38,15 +38,17 @@ class Legend extends Component {
           </li>
         )
     } else {
-      layers.sort(compare)
-      layers.forEach(({id, filter, paint}) => {
-        const from = filter[1][2]
-        const to = filter[2] ? filter[2][2] : '.'
-        const label = `${from}   to  ${to}`
-        legendEntries.push(
-          <li key={id}><span style={{...iconStyle, backgroundColor: paint['fill-color']}}/>&nbsp;&nbsp;{label}</li>
-        )
-      })
+      if(layers){
+        layers.sort(compare)
+        layers.forEach(({id, filter, paint}) => {
+          const from = filter[1][2]
+          const to = filter[2] ? filter[2][2] : '.'
+          const label = `${from}   to  ${to}`
+          legendEntries.push(
+            <li key={id}><span style={{...iconStyle, backgroundColor: paint['fill-color']}}/>&nbsp;&nbsp;{label}</li>
+          )
+        })
+      }
       if (!layers)
         legendEntries.push(
           <li key="2"><span className={'legend-icon high ' + this.props.featureType}></span>High density
