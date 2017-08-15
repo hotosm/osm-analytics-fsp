@@ -34,7 +34,7 @@ class FSPBar extends Component {
     this.setState({data: config[country][question]})
   }
 
-  onRangeChanged (country, question, id, selection) {
+  onRangeChanged (country, question, id, selection, category) {
     const data = config[country][question]
     const controls = data.controls.map(ctr => {
       if (ctr.id === id) {
@@ -44,17 +44,17 @@ class FSPBar extends Component {
         return {...ctr}
     })
     this.setState({data: {...data, controls}})
-    this.props.statsActions.setFSPFilter({country, question, id, selection})
+    this.props.statsActions.setFSPFilter({country, question, id, selection, category})
   }
 
-  onChoiceChanged(country, question, id, choice){
-    this.props.statsActions.setFSPFilterChoice({country, question, id, choice})
+  onChoiceChanged (country, question, id, choice, category) {
+    this.props.statsActions.setFSPFilterChoice({country, question, id, choice, category})
   }
 
   render () {
     const {country, question} = this.props.routeParams
     const {data: {title, controls}} = this.state
-    return <div id="fspbar">
+    return <div id="fspbar" style={{overflow: 'auto'}}>
       <div style={{color: 'white', fontSize: 24, padding: 15, paddingBottom: 0}}>
         <span>{title}</span>
       </div>
@@ -62,10 +62,11 @@ class FSPBar extends Component {
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        alignContent: 'space-between'
+        alignContent: 'space-between',
+        minWidth: 1280
       }}>
         {
-          controls.map(({type, title, label, range, id, data}) => {
+          controls.map(({type, title, label, range, id, data, category}) => {
             if (type === 'range') {
               return (
                 <div key={id} style={{width: 350, margin: 10}}>
@@ -73,7 +74,7 @@ class FSPBar extends Component {
                                  label={label}
                                  range={range}
                                  onSelectionChanged={(range) => {
-                                   this.onRangeChanged(country, question, id, range)
+                                   this.onRangeChanged(country, question, id, range, category)
                                  }}
                   />
                 </div>
@@ -84,7 +85,7 @@ class FSPBar extends Component {
                 <div>
                   <FSPRadio data={data} title={title}
                             onChange={(choice) => {
-                              this.onChoiceChanged(country, question, id, choice)
+                              this.onChoiceChanged(country, question, id, choice, category)
                             }}
                   />
                 </div>

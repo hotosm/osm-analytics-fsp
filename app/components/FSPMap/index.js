@@ -31,16 +31,21 @@ Array.prototype.flatMap = function (lambda) {
 
 class FSPMap extends Component {
   state = {
-    choiceRange: undefined
+    bankFilter: undefined,
+    atmFilter: undefined,
   }
 
   render () {
-    const {question} = this.props.routeParams
+    const {country,question} = this.props.routeParams
+    const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
+    const legendTitle = fspControls[country][question]['legend']
     return <div className="fspView">
       <div id="map">
       </div>
       <Legend
+        title={legendTitle}
         showHighlight={false}
+        layers={layers}
         featureType={question}
         zoom={this.state.mapZoomLevel}
         hotOverlayEnabled={false}
@@ -152,29 +157,55 @@ class FSPMap extends Component {
 
   setFilter (filter, routeParams) {
     const {country} = routeParams
-    const {question, id, selection} = filter
+    const {question, id, selection, category} = filter
     const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
+
     const controls = fspControls[country][question]['controls']
     const control = controls.filter(cnt => cnt.id === id)[0]
-    let property = this.state.choiceRange || control.field
+
+    const {bankFilter, atmFilter} = this.state
+    const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
+
+    let property = filterField || control.field
     layers.forEach(layer => {
       const currentFilter = glLayer._glMap.getFilter(layer.id) || []
-      const newFilter = currentFilter.filter(f => {
-        return !Array.isArray(f) || f[1] !== property
-      })
+
+      let newFilter = this.removeFilter(currentFilter, property)
+      // Remove other bank filters
+      if (id.indexOf('bank') >= 0) {
+        newFilter = this.removeFilter(newFilter, '_bank_')
+        newFilter = this.removeFilter(newFilter, '_distanceFromBank')
+      }
+
+      // Remove other atm filters
+      if (id.indexOf('atm') >= 0) {
+        newFilter = this.removeFilter(newFilter, '_atm_')
+        newFilter = this.removeFilter(newFilter, '_distanceFromATM')
+      }
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
-      console.log(filter);
+      console.log(filter)
       glLayer._glMap.setFilter(layer.id, filter)
+    })
+  }
+
+  removeFilter (filters, like) {
+    return filters.filter(f => {
+      return !Array.isArray(f) || (f[1].indexOf(like) === -1)
     })
   }
 
   setFilterChoice (filter, routeParams) {
     const {country} = routeParams
-    const {question, id, choice} = filter
-    const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
-    console.log({filter, routeParams})
-    let choiceRange = `_bank_${choice}`
-    this.setState({choiceRange});
+    const {question, id, choice, category} = filter
+    const controls = fspControls[country][question]['controls']
+    const control = controls.filter(cnt => cnt.id === id)[0]
+    let suffix = control.field
+    let choiceRange = choice ? `${suffix}${choice}` : undefined
+    if (suffix.indexOf('_bank_') >= 0) {
+      this.setState({bankFilter: choiceRange})
+    } else {
+      this.setState({atmFilter: choiceRange})
+    }
   }
 
   mapSetRegion (region) {

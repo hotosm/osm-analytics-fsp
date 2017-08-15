@@ -182,6 +182,7 @@ export const controls = {
   uganda: {
     mobilemoney: {
       title: 'Mobile money agents in relation to population and economic activity',
+      legend: 'Number of Agents',
       controls: [
         {
           id: 'peoplePerAgent',
@@ -210,11 +211,14 @@ export const controls = {
       ]
     },
     mmdistbanks: {
+
       title: 'Show mobile money agents that are (at least) a distance from a bank or ATM',
+      legend: 'Number of Agents',
       controls: [
         {
           id: 'distance-from-bank',
           type: 'range',
+          category: 'bank',
           field: '_distanceFromBank',
           title: 'Distance from banks',
           label: ' meters',
@@ -223,16 +227,29 @@ export const controls = {
         {
           id: 'distance-from-atm',
           type: 'range',
-          field: '_bank_unknown',
+          category: 'atm',
+          field: '_distanceFromATM',
           title: 'Distance from ATM',
           label: ' meters',
           range: {max: 20000, min: 0, selection: [300, 7500]}
         },
         {
-          id: 'distance-selector',
+          id: 'distance-selector-bank',
           type: 'combo',
+          category: 'bank',
+          field: '_bank_',
           data: [...selectedBanks],
-          title: 'Banks',
+          title: 'Select bank',
+          label: ' meters',
+          range: {max: 20000, min: 0, selection: [300, 7500]}
+        },
+        {
+          id: 'distance-selector-atm',
+          type: 'combo',
+          category: 'atm',
+          field: '_atm_',
+          data: [...selectedBanks],
+          title: 'Select ATM',
           label: ' meters',
           range: {max: 20000, min: 0, selection: [300, 7500]}
         }
