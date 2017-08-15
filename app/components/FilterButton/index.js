@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import DropdownButton from '../DropdownButton'
 import { filters } from '../../settings/options'
-
+import './style.css'
 
 class FilterButton extends Component {
   render() {

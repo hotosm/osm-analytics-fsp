@@ -18,7 +18,8 @@ class FSPBar extends Component {
     super(props)
     const {routeParams: {country, question}} = props
     this.state = {
-      data: config[country][question]
+      data: config[country][question],
+      bankSortOrder: undefined
     }
   }
 
@@ -51,11 +52,23 @@ class FSPBar extends Component {
     this.props.statsActions.setFSPFilterChoice({country, question, id, choice, category})
   }
 
+  componentWillReceiveProps (nextProps) {
+    // check for changed map parameters
+    if (nextProps.stats.bankSortOrder !== this.props.stats.bankSortOrder) {
+      this.setBankSortOder(nextProps.stats.bankSortOrder)
+    }
+  }
+
+  setBankSortOder (bankSortOrder) {
+    console.log('Bank sort order', bankSortOrder)
+    this.setState({bankSortOrder})
+  }
+
   render () {
     const {country, question} = this.props.routeParams
-    const {data: {title, controls}} = this.state
+    const {data: {title, controls}, bankSortOrder} = this.state
     return <div id="fspbar" style={{overflow: 'auto'}}>
-      <div style={{color: 'white', fontSize: 24, padding: 15, paddingBottom: 0}}>
+      <div style={{color: 'white', fontWeight: 'bold', fontSize: 20, padding: 15, paddingBottom: 0}}>
         <span>{title}</span>
       </div>
       <div style={{
@@ -82,8 +95,8 @@ class FSPBar extends Component {
             }
             else {
               return (
-                <div>
-                  <FSPRadio data={data} title={title}
+                <div style={{fontWeight: 'normal'}}>
+                  <FSPRadio data={data} title={title} bankSortOrder={bankSortOrder}
                             onChange={(choice) => {
                               this.onChoiceChanged(country, question, id, choice, category)
                             }}

@@ -7,6 +7,7 @@ import { area, bboxPolygon, erase } from 'turf'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as MapActions from '../../actions/map'
+import * as StatsActions from '../../actions/stats'
 import { debounce } from 'lodash'
 import regionToCoords from '../Map/regionToCoords'
 import Legend from '../Legend'
@@ -18,6 +19,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import glStyles from '../Map/glstyles'
 import './style.css'
+import { selectedBanks } from '../../settings/fspSettings.js'
 
 var map // Leaflet map object
 var glLayer // mapbox-gl layer
@@ -36,7 +38,7 @@ class FSPMap extends Component {
   }
 
   render () {
-    const {country,question} = this.props.routeParams
+    const {country, question} = this.props.routeParams
     const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
     const legendTitle = fspControls[country][question]['legend']
     return <div className="fspView">
@@ -167,8 +169,10 @@ class FSPMap extends Component {
     const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
 
     let property = filterField || control.field
+    const layerIds = []
     layers.forEach(layer => {
       const currentFilter = glLayer._glMap.getFilter(layer.id) || []
+      layerIds.push(layer.id)
 
       let newFilter = this.removeFilter(currentFilter, property)
       // Remove other bank filters
@@ -183,9 +187,20 @@ class FSPMap extends Component {
         newFilter = this.removeFilter(newFilter, '_distanceFromATM')
       }
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
-      console.log(filter)
       glLayer._glMap.setFilter(layer.id, filter)
     })
+    const features = glLayer._glMap.queryRenderedFeatures({layers: layerIds})
+    //const props = features.map(f => f.properties)
+    const min = selection[0]
+    const max = selection[1]
+    const banks = selectedBanks.map(bank => {
+      const key = `_bank_${bank.name}`
+      const bankDistances = features.map(({properties}) => properties[key])
+      const valid = bankDistances.filter(dist => (dist >= min && dist < max))
+      return {...bank, count: valid.length}
+    })
+
+    this.props.statsActions.setBankSortOder(banks);
   }
 
   removeFilter (filters, like) {
@@ -258,7 +273,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    actions: bindActionCreators(MapActions, dispatch)
+    actions: bindActionCreators(MapActions, dispatch),
+    statsActions: bindActionCreators(StatsActions, dispatch)
   }
 }
 

@@ -1,5 +1,14 @@
 import React, { Component } from 'react'
 
+function compare(a, b) {
+  if (a.count < b.count) {
+    return 1;
+  }
+  if (a.count > b.count) {
+    return -1;
+  }
+  return 0;
+}
 export default class FSPRadio extends Component {
   constructor (params) {
     super(params)
@@ -27,9 +36,9 @@ export default class FSPRadio extends Component {
 
   render () {
     const {selected} = this.state
-    const {data = [], title} = this.props
+    const {data = [], title, bankSortOrder} = this.props
     const selectorStyle = {
-      width: 250,
+      width: 300,
       border: '1px solid rgba(38,35,35,0.5)',
       height: 150,
       color: 'white',
@@ -39,14 +48,18 @@ export default class FSPRadio extends Component {
     const clearStyle = {
       display: 'inline-block',
       float: 'right',
-      color: 'green',
+      color: '#6DCDCB',
     }
+    if(bankSortOrder)
+      bankSortOrder.sort(compare);
+    const dataList = bankSortOrder || data
     return (
       <div style={selectorStyle}>
-        {title}:&nbsp;&nbsp;<label style={{color: 'white'}}>{selected}</label>
-        <a href="#" style={clearStyle} onClick={this.onClear.bind(this)}>Clear</a>
+        <div style={{fontWeight: 'bold'}}>{title}:&nbsp;&nbsp;<label style={{color: 'white'}}>{selected}</label>
+          <a href="#" style={clearStyle} onClick={this.onClear.bind(this)}>Clear</a>
+        </div>
         <div style={{overflow: 'auto', height: 120, marginTop: 5}}>
-          {data.map(({name}) => {
+          {dataList.map(({name,count}) => {
             /*
             return <div>
               <input
@@ -60,6 +73,7 @@ export default class FSPRadio extends Component {
               checked={selected === name}
               onClick={() => {this.setSelected(name)}}
               name={name}
+              count={count}
             />
           })}
         </div>
@@ -76,10 +90,10 @@ const Option = (props) => {
     width: '95%',
     backgroundColor: selColor
   }
-  const {name, checked, onClick} = props
+  const {name,count, checked, onClick} = props
   return (
-    <div>
-      <label>{name}</label><br/>
+    <div onClick={onClick} style={{cursor: 'pointer'}}>
+      <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{name}&nbsp;&nbsp;{count}</label><br/>
       <div style={{...valueDiv, backgroundColor: checked ? selColor : 'gray'}} onClick={onClick}/>
     </div>
   )

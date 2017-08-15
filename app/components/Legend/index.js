@@ -24,7 +24,6 @@ class Legend extends Component {
       height: 10, width: 10, display: 'inline-block',
       backgroundColor: 'blue'
     }
-    console.log(layers)
     const legendEntries = []
     if (this.props.zoom > 13) {
       legendEntries.push(
