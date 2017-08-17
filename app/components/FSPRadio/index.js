@@ -92,9 +92,13 @@ const Option = (props) => {
     backgroundColor: selColor
   }
   const {name, count, checked, onClick} = props
+  const noOfAgents = count ? count.toLocaleString() : count
   return (
     <div onClick={onClick} style={{cursor: 'pointer'}}>
-      <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{name}&nbsp;&nbsp;{count}</label><br/>
+      <div style={{width:'95%'}}>
+        <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{name}</label>
+        <label style={{float: 'right', color: checked ? selColor : 'white'}}>{noOfAgents}</label>
+      </div>
       <div style={{...valueDiv, backgroundColor: checked ? selColor : 'gray'}} onClick={onClick}/>
     </div>
   )
