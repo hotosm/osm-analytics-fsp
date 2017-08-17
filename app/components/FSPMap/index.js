@@ -34,12 +34,13 @@ Array.prototype.flatMap = function (lambda) {
 }
 
 class FSPMap extends Component {
-  state = {
+  filters = {
     bankFilter: undefined,
     atmFilter: undefined,
     bankRange: [0, 100000],// Read values from config, but thos can work well
     atmRange: [0, 100000],// Read values from config, but thos can work well
   }
+  state = {}
 
   render () {
     const {country, question} = this.props.routeParams
@@ -101,9 +102,9 @@ class FSPMap extends Component {
 
   loadMapStyle ({country, question}) {
     glLayer._glMap.setStyle(glStyles([question]), {diff: false})
-    const range  = this.state.bankRange;
+    const range = this.filters.bankRange
     if (question === 'mmdistbanks')
-      this.sortBanksAndATMs(range[0],range[1])
+      this.sortBanksAndATMs(range[0], range[1])
   }
 
   focusOnRegion (region) {
@@ -153,14 +154,15 @@ class FSPMap extends Component {
   }
 
   setFilter (filter, routeParams) {
+    console.log('Setting filter', filter)
     const {country} = routeParams
-    const {question, id, selection, category} = filter
+    const {question, id, selection} = filter
     const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
 
     const controls = fspControls[country][question]['controls']
     const control = controls.filter(cnt => cnt.id === id)[0]
 
-    const {bankFilter, atmFilter} = this.state
+    const {bankFilter, atmFilter} = this.filters
     const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
 
     let property = filterField || control.field
@@ -174,20 +176,37 @@ class FSPMap extends Component {
       if (id.indexOf('bank') >= 0) {
         newFilter = this.removeFilter(newFilter, '_bank_')
         newFilter = this.removeFilter(newFilter, '_distanceFromBank')
-        this.setState({bankRange: selection})
+        this.filters = {...this.filters, bankRange: selection}
       }
       // Remove other atm filters
       if (id.indexOf('atm') >= 0) {
         newFilter = this.removeFilter(newFilter, '_atm_')
         newFilter = this.removeFilter(newFilter, '_distanceFromATM')
-        this.setState({atmRange: selection})
+        this.filters = {...this.filters, atmRange: selection}
       }
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
+      console.log(filter)
       glLayer._glMap.setFilter(layer.id, filter)
     })
 
     if (question === 'mmdistbanks')
       this.sortBanksAndATMs(selection[0], selection[1])
+  }
+
+  setFilterChoice (filter, routeParams) {
+    const {country} = routeParams
+    const {question, id, choice} = filter
+    const controls = fspControls[country][question]['controls']
+    const control = controls.filter(cnt => cnt.id === id)[0]
+    let suffix = control.field
+    let choiceRange = choice ? `${suffix}${choice}` : undefined
+    if (suffix.indexOf('_bank_') >= 0) {
+      this.filters = {...this.filters, bankFilter: choiceRange || '_distanceFromBank'}
+      this.setFilter({...filter, selection: this.filters.bankRange}, routeParams)
+    } else {
+      this.filters = {...this.filters, atmFilter: choiceRange || '_distanceFromATM'}
+      this.setFilter({...filter, selection: this.filters.atmRange}, routeParams)
+    }
   }
 
   sortBanksAndATMs (min, max) {
@@ -199,9 +218,7 @@ class FSPMap extends Component {
         if (err || !res.ok) {
           console.error('Oh no! error', err)
         } else {
-          console.log('On results')
           const {bankCounts, atmCounts} = res.body
-          console.log('On results', {bankCounts, atmCounts})
           this.props.statsActions.setBankSortOder({bankCounts, atmCounts})
         }
       })
@@ -211,22 +228,6 @@ class FSPMap extends Component {
     return filters.filter(f => {
       return !Array.isArray(f) || (f[1].indexOf(like) === -1)
     })
-  }
-
-  setFilterChoice (filter, routeParams) {
-    const {country} = routeParams
-    const {question, id, choice, category} = filter
-    const controls = fspControls[country][question]['controls']
-    const control = controls.filter(cnt => cnt.id === id)[0]
-    let suffix = control.field
-    let choiceRange = choice ? `${suffix}${choice}` : undefined
-    if (suffix.indexOf('_bank_') >= 0) {
-      this.setState({bankFilter: choiceRange})
-      //this.setFilter({...filter, selection: this.state.bankRange}, routeParams)
-    } else {
-      this.setState({atmFilter: choiceRange})
-      //this.setFilter({...filter, selection: this.state.atmRange}, routeParams)
-    }
   }
 
   mapSetRegion (region) {
