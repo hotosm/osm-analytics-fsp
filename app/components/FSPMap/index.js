@@ -6,12 +6,14 @@ import React, { Component } from 'react'
 import { area, bboxPolygon, erase } from 'turf'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import request from 'superagent'
 import * as MapActions from '../../actions/map'
 import * as StatsActions from '../../actions/stats'
 import { debounce } from 'lodash'
 import regionToCoords from '../Map/regionToCoords'
 import Legend from '../Legend'
 import { controls as fspControls } from '../../settings/fspSettings'
+import settings from '../../settings/settings'
 // leaflet plugins
 import '../../libs/leaflet-heat.js'
 import 'leaflet.markercluster/dist/leaflet.markercluster.js'
@@ -35,11 +37,13 @@ class FSPMap extends Component {
   state = {
     bankFilter: undefined,
     atmFilter: undefined,
+    bankRange: [0, 100000],// Read values from config, but thos can work well
+    atmRange: [0, 100000],// Read values from config, but thos can work well
   }
 
   render () {
     const {country, question} = this.props.routeParams
-    const layers = glStyles([question]).layers.filter(l => l.id.match(/aggregated/))
+    const layers = glStyles([question]).layers
     const legendTitle = fspControls[country][question]['legend']
     return <div className="fspView">
       <div id="map">
@@ -64,7 +68,7 @@ class FSPMap extends Component {
   }
 
   componentDidMount () {
-    const {question} = this.props.routeParams
+    const {country, question} = this.props.routeParams
     map = L.map(
       'map', {
         editable: true,
@@ -82,10 +86,8 @@ class FSPMap extends Component {
       attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
       zIndex: -1
     }).addTo(map)
-
-    const region = 'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@'
-    this.props.actions.setRegionFromUrl(region)
-
+    // Pass proper value
+    this.focusOnRegion('')
     if (!mapboxgl.supported()) {
       alert('This browser does not support WebGL which is required to run this application. Please check that you are using a supported browser and that WebGL is enabled.')
     }
@@ -94,7 +96,20 @@ class FSPMap extends Component {
       style: glStyles([question]),
       hash: false
     }).addTo(map)
-    this.addPopupOnClick(question)
+    this.loadMapStyle({country, question})
+  }
+
+  loadMapStyle ({country, question}) {
+    glLayer._glMap.setStyle(glStyles([question]), {diff: false})
+    const range  = this.state.bankRange;
+    if (question === 'mmdistbanks')
+      this.sortBanksAndATMs(range[0],range[1])
+  }
+
+  focusOnRegion (region) {
+    // Send this to settings
+    const _region = 'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@'
+    this.props.actions.setRegionFromUrl(_region)
   }
 
   createHeatPoints (data) {
@@ -133,28 +148,8 @@ class FSPMap extends Component {
     }
     if (nextProps.routeParams !== this.props.routeParams) {
       this.loadMapStyle(nextProps.routeParams)
+      this.focusOnRegion('')
     }
-  }
-
-  loadMapStyle ({country, question}) {
-    glLayer._glMap.setStyle(glStyles([question]), {diff: false})
-    this.addPopupOnClick(question)
-  }
-
-  addPopupOnClick (question) {
-    map.on('click', function (e) {
-      const glMap = glLayer._glMap
-      const point = e.layerPoint
-      // to target only some layers, change the options, see documentation:
-      // { layers: ['my-layer-name'] }
-      // https://www.mapbox.com/mapbox-gl-js/api/
-      console.log(point)
-      const options = {}
-      const features = glMap.queryRenderedFeatures([point.x, point.y], options)
-      features.forEach(f => {
-        console.log(f.properties)
-      })
-    })
   }
 
   setFilter (filter, routeParams) {
@@ -179,28 +174,37 @@ class FSPMap extends Component {
       if (id.indexOf('bank') >= 0) {
         newFilter = this.removeFilter(newFilter, '_bank_')
         newFilter = this.removeFilter(newFilter, '_distanceFromBank')
+        this.setState({bankRange: selection})
       }
-
       // Remove other atm filters
       if (id.indexOf('atm') >= 0) {
         newFilter = this.removeFilter(newFilter, '_atm_')
         newFilter = this.removeFilter(newFilter, '_distanceFromATM')
+        this.setState({atmRange: selection})
       }
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
       glLayer._glMap.setFilter(layer.id, filter)
     })
-    const features = glLayer._glMap.queryRenderedFeatures({layers: layerIds})
-    //const props = features.map(f => f.properties)
-    const min = selection[0]
-    const max = selection[1]
-    const banks = selectedBanks.map(bank => {
-      const key = `_bank_${bank.name}`
-      const bankDistances = features.map(({properties}) => properties[key])
-      const valid = bankDistances.filter(dist => (dist >= min && dist < max))
-      return {...bank, count: valid.length}
-    })
 
-    this.props.statsActions.setBankSortOder(banks);
+    if (question === 'mmdistbanks')
+      this.sortBanksAndATMs(selection[0], selection[1])
+  }
+
+  sortBanksAndATMs (min, max) {
+    request
+      .get(`${settings['vt-source']}/bankatm/${min}/${max}`)
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .end((err, res) => {
+        if (err || !res.ok) {
+          console.error('Oh no! error', err)
+        } else {
+          console.log('On results')
+          const {bankCounts, atmCounts} = res.body
+          console.log('On results', {bankCounts, atmCounts})
+          this.props.statsActions.setBankSortOder({bankCounts, atmCounts})
+        }
+      })
   }
 
   removeFilter (filters, like) {
@@ -218,8 +222,10 @@ class FSPMap extends Component {
     let choiceRange = choice ? `${suffix}${choice}` : undefined
     if (suffix.indexOf('_bank_') >= 0) {
       this.setState({bankFilter: choiceRange})
+      //this.setFilter({...filter, selection: this.state.bankRange}, routeParams)
     } else {
       this.setState({atmFilter: choiceRange})
+      //this.setFilter({...filter, selection: this.state.atmRange}, routeParams)
     }
   }
 

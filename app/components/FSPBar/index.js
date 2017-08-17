@@ -23,17 +23,6 @@ class FSPBar extends Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    const {routeParams} = nextProps
-    if (routeParams !== this.props.routeParams) {
-      this.loadControls(routeParams)
-    }
-  }
-
-  loadControls ({country, question}) {
-
-    this.setState({data: config[country][question]})
-  }
 
   onRangeChanged (country, question, id, selection, category) {
     const data = config[country][question]
@@ -52,21 +41,9 @@ class FSPBar extends Component {
     this.props.statsActions.setFSPFilterChoice({country, question, id, choice, category})
   }
 
-  componentWillReceiveProps (nextProps) {
-    // check for changed map parameters
-    if (nextProps.stats.bankSortOrder !== this.props.stats.bankSortOrder) {
-      this.setBankSortOder(nextProps.stats.bankSortOrder)
-    }
-  }
-
-  setBankSortOder (bankSortOrder) {
-    console.log('Bank sort order', bankSortOrder)
-    this.setState({bankSortOrder})
-  }
-
   render () {
-    const {country, question} = this.props.routeParams
-    const {data: {title, controls}, bankSortOrder} = this.state
+    const {routeParams: {country, question},stats} = this.props
+    const {title, controls} = config[country][question];
     return <div id="fspbar" style={{overflow: 'auto'}}>
       <div style={{color: 'white', fontWeight: 'bold', fontSize: 20, padding: 15, paddingBottom: 0}}>
         <span>{title}</span>
@@ -95,8 +72,8 @@ class FSPBar extends Component {
             }
             else {
               return (
-                <div style={{fontWeight: 'normal'}}>
-                  <FSPRadio data={data} title={title} bankSortOrder={bankSortOrder}
+                <div  key={id} style={{fontWeight: 'normal'}}>
+                  <FSPRadio data={data} title={title} bankSortOrder={stats.bankSortOrder} id={id}
                             onChange={(choice) => {
                               this.onChoiceChanged(country, question, id, choice, category)
                             }}
@@ -104,7 +81,6 @@ class FSPBar extends Component {
                 </div>
               )
             }
-
           })
         }
       </div>

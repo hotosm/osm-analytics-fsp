@@ -5,20 +5,21 @@ import style from './style.css'
 import { filters as featureTypeOptions } from '../../settings/options'
 import settings from '../../settings/settings'
 
-function compare(a, b) {
+function compare (a, b) {
   if (a.id < b.id) {
-    return -1;
+    return -1
   }
   if (a.id > b.id) {
-    return 1;
+    return 1
   }
-  return 0;
+  return 0
 }
+
 class Legend extends Component {
   state = {}
 
   render () {
-    const {showHighlight = true, layers,title="Map Legend"} = this.props
+    const {showHighlight = true, layers, title = 'Map Legend'} = this.props
     const featureTypeDescription = featureTypeOptions.find(f => f.id === this.props.featureType).description
     const iconStyle = {
       height: 10, width: 10, display: 'inline-block',
@@ -26,20 +27,33 @@ class Legend extends Component {
     }
     const legendEntries = []
     if (this.props.zoom > 13) {
-      legendEntries.push(
-        <li key="0"><span className={'legend-icon feature ' + this.props.featureType}></span>{featureTypeDescription}
-        </li>,
-      )
+      if (layers) {
+        const raw = layers.filter(layer => layer.id.indexOf('raw') >= 0)
+        raw.forEach(({id, _description, paint}) => {
+          const color = paint['circle-color'] || paint['fill-color'] || paint['line-color']
+          legendEntries.push(
+            <li key={id}><span style={{...iconStyle, backgroundColor: color}}/>&nbsp;&nbsp;{_description}</li>
+          )
+        })
+      } else {
+        legendEntries.push(
+          <li key="0"><span className={'legend-icon feature ' + this.props.featureType}></span>{featureTypeDescription}
+          </li>,
+        )
+      }
+
       if (showHighlight)
         legendEntries.push(
-          <li key="1"><span
-            className={'legend-icon feature highlight ' + this.props.featureType}></span>Highlighted {featureTypeDescription.toLowerCase()}
+          <li key="1">
+            <span
+              className={'legend-icon feature highlight ' + this.props.featureType}></span>Highlighted {featureTypeDescription.toLowerCase()}
           </li>
         )
     } else {
-      if(layers){
-        layers.sort(compare)
-        layers.forEach(({id, filter, paint}) => {
+      if (layers) {
+        const aggregated = layers.filter(l => l.id.match(/aggregated/))
+        aggregated.sort(compare)
+        aggregated.forEach(({id, filter, paint}) => {
           const from = filter[1][2]
           const to = filter[2] ? filter[2][2] : '.'
           const label = `${from}   to  ${to}`

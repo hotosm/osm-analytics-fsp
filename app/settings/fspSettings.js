@@ -190,7 +190,7 @@ export const controls = {
           field: '_peoplePerAgent',
           title: 'People per agent',
           label: 'people',
-          range: {max: 4000, min: 0, selection: [0, 4000]}
+          range: {max: 12000, min: 0, selection: [0, 12000]}
         },
         {
           id: 'population',
@@ -198,7 +198,7 @@ export const controls = {
           field: '_populationDensity',
           title: 'Population density',
           label: 'people/cell (,000)',
-          range: {max: 15000, min: 0, selection: [0, 2500]}
+          range: {max: 15000, min: 0, selection: [0, 15000]}
         },
         {
           id: 'economic',
@@ -206,7 +206,7 @@ export const controls = {
           field: '_economicActivity',
           title: 'Economic activity',
           label: '(1 : Low , 10 : High)',
-          range: {max: 10, min: 0, selection: [0, 8]}
+          range: {max: 10, min: 0, selection: [0, 10]}
         }
       ]
     },
@@ -222,7 +222,7 @@ export const controls = {
           field: '_distanceFromBank',
           title: 'Distance from banks',
           label: ' meters',
-          range: {max: 20000, min: 0, selection: [300, 7500]}
+          range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
           id: 'distance-from-atm',
@@ -231,7 +231,7 @@ export const controls = {
           field: '_distanceFromATM',
           title: 'Distance from ATM',
           label: ' meters',
-          range: {max: 20000, min: 0, selection: [300, 7500]}
+          range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
           id: 'distance-selector-bank',

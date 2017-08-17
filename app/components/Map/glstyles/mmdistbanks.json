@@ -20,39 +20,8 @@
   },
   "layers": [
     {
-      "id": "mmdistbanks-raw",
-      "type": "fill",
-      "source": "osm-mmdistbanks-raw",
-      "source-layer": "osm",
-      "paint": {
-        "fill-color": "#510000",
-        "fill-opacity": 1,
-        "fill-outline-color": "#E08214"
-      },
-      "filter": [
-        "==",
-        "$type",
-        "Polygon"
-      ]
-    },
-    {
-      "id": "mmdistbanks-raw-road",
-      "type": "line",
-      "source": "osm-mmdistbanks-raw",
-      "source-layer": "osm",
-      "paint": {
-        "line-width": 1,
-        "line-color": "#9e9ac8",
-        "line-opacity": 1
-      },
-      "filter": [
-        "==",
-        "$type",
-        "LineString"
-      ]
-    },
-    {
-      "id": "mmdistbanks-raw-mm",
+      "id": "mmdistbanks-raw-mm-aggregated",
+      "_description":"Mobile Money Agent",
       "type": "circle",
       "source": "osm-mmdistbanks-raw",
       "source-layer": "osm",
@@ -76,6 +45,7 @@
     },
     {
       "id": "mmdistbanks-raw-bank",
+      "_description":"Bank",
       "type": "circle",
       "source": "osm-mmdistbanks-raw",
       "source-layer": "osm",
@@ -99,6 +69,7 @@
     },
     {
       "id": "mmdistbanks-raw-atm",
+      "_description":"ATM",
       "type": "circle",
       "source": "osm-mmdistbanks-raw",
       "source-layer": "osm",

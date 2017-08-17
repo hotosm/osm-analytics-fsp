@@ -20,7 +20,8 @@
   },
   "layers": [
     {
-      "id": "mobilemoney-raw",
+      "id": "mobilemoney-raw-building",
+      "_description":"Building",
       "type": "fill",
       "source": "osm-mobilemoney-raw",
       "source-layer": "osm",
@@ -37,6 +38,7 @@
     },
     {
       "id": "mobilemoney-raw-road",
+      "_description":"Road",
       "type": "line",
       "source": "osm-mobilemoney-raw",
       "source-layer": "osm",
@@ -52,7 +54,8 @@
       ]
     },
     {
-      "id": "mobilemoney-raw-mm",
+      "id": "mobilemoney-raw-agent-aggregated",
+      "_description":"Mobile money agent",
       "type": "circle",
       "source": "osm-mobilemoney-raw",
       "source-layer": "osm",
@@ -64,21 +67,6 @@
         "==",
         "$type",
         "Point"
-      ]
-    },
-    {
-      "id": "mobilemoney-raw-highlight",
-      "type": "fill",
-      "source": "osm-mobilemoney-raw",
-      "source-layer": "osm",
-      "paint": {
-        "fill-color": "#5CBAD8",
-        "fill-opacity": 1
-      },
-      "filter": [
-        "==",
-        "_timestamp",
-        -1
       ]
     },
     {
