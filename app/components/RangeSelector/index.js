@@ -20,6 +20,7 @@ class RangeSelector extends Component {
   constructor (props) {
     super(props)
     const {range: {selection}} = this.props
+    this.defaltSelection = selection
     this.state = {selection}
   }
 
@@ -27,6 +28,15 @@ class RangeSelector extends Component {
     const {onSelectionChanged} = this.props
     this.setState({selection})
     onSelectionChanged(selection)
+  }
+
+  resetSelection () {
+    console.log('Reseting selection')
+    this.setState({selection: this.defaltSelection})
+  }
+
+  getSelection () {
+    return this.state.selection
   }
 
   render () {
@@ -76,7 +86,11 @@ class RangeSelector extends Component {
         min={min}
         max={max}
         defaultValue={selection}
+        value={selection}
         pushable
+        onChange={(value => {
+          this.setState({selection: value})
+        })}
         onAfterChange={this.onSelectionChanged.bind(this)}
         handleStyle={[
           handleStyle,

@@ -32,13 +32,14 @@ var moveDirectly = false
 Array.prototype.flatMap = function (lambda) {
   return Array.prototype.concat.apply([], this.map(lambda))
 }
+const defaultRange = [0, 100000]
 
 class FSPMap extends Component {
   filters = {
     bankFilter: undefined,
     atmFilter: undefined,
-    bankRange: [0, 100000],// Read values from config, but thos can work well
-    atmRange: [0, 100000],// Read values from config, but thos can work well
+    bankRange: defaultRange,// Read values from config, but thos can work well
+    atmRange: defaultRange,// Read values from config, but thos can work well
   }
   state = {}
 
@@ -162,7 +163,7 @@ class FSPMap extends Component {
     const controls = fspControls[country][question]['controls']
     const control = controls.filter(cnt => cnt.id === id)[0]
 
-    const {bankFilter, atmFilter} = this.filters
+    const {bankFilter, atmFilter, bankRange, atmRange} = this.filters
     const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
 
     let property = filterField || control.field
@@ -176,16 +177,25 @@ class FSPMap extends Component {
       if (id.indexOf('bank') >= 0) {
         newFilter = this.removeFilter(newFilter, '_bank_')
         newFilter = this.removeFilter(newFilter, '_distanceFromBank')
+        if (selection[1] <= atmRange[0] || selection[0] >= atmRange[1]) {
+          // Invalid range clear atm selection
+          newFilter = this.removeFilter(newFilter, '_distanceFromATM')
+          this.filters.atmRange = defaultRange
+        }
         this.filters = {...this.filters, bankRange: selection}
       }
       // Remove other atm filters
       if (id.indexOf('atm') >= 0) {
         newFilter = this.removeFilter(newFilter, '_atm_')
         newFilter = this.removeFilter(newFilter, '_distanceFromATM')
+        if (selection[1] <= bankRange[0] || selection[0] >= bankRange[1]) {
+          // Invalid range clear atm selection
+          newFilter = this.removeFilter(newFilter, '_distanceFromBank')
+          this.filters.atmRange = defaultRange
+        }
         this.filters = {...this.filters, atmRange: selection}
       }
       const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
-      console.log(filter)
       glLayer._glMap.setFilter(layer.id, filter)
     })
 
