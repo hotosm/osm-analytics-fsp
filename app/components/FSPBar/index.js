@@ -70,13 +70,14 @@ class FSPBar extends Component {
         minWidth: 1280
       }}>
         {
-          controls.map(({type, title, label, range, id, data, category}) => {
+          controls.map(({type, title, label, range, id, data, category,divisor}) => {
             if (type === 'range') {
               return (
                 <div key={id} style={{width: 350, margin: 10}}>
                   <RangeSelector title={title}
                                  label={label}
                                  range={range}
+                                 divisor={divisor}
                                  ref={r => {
                                    this.mySelectors[id] = r
                                  }}

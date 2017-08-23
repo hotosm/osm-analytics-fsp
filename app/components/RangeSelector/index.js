@@ -6,16 +6,6 @@ import Range from 'rc-slider/lib/Range'
 import 'rc-slider/assets/index.css'
 import './style.css'
 
-const sampleData = (min, max) => {
-  const ticks = {}
-  ticks[min] = min
-  ticks[max * 0.25] = max * 0.25
-  ticks[max * 0.5] = max * 0.5
-  ticks[max * 0.75] = max * 0.75
-  ticks[max] = max
-  return ticks
-}
-
 class RangeSelector extends Component {
   constructor (props) {
     super(props)
@@ -72,15 +62,27 @@ class RangeSelector extends Component {
       marginBottom: 35,
       marginTop: 30
     }
-    const {selection} = this.state
-    const {title, range: {max, min}, label = ''} = this.props
+    const {selection} = this.state;
+    const {title, range: {max, min}, label = '', divisor = 1} = this.props;
+    const start = selection[0] / divisor;
+    const end = selection[1] / divisor;
+
+    const sampleData = (min, max) => {
+      const ticks = {};
+      ticks[min] = min / divisor
+      ticks[max * 0.25] = (max * 0.25) / divisor
+      ticks[max * 0.5] = (max * 0.5) / divisor
+      ticks[max * 0.75] = (max * 0.75) / divisor
+      ticks[max] = max / divisor
+      return ticks;
+    }
     return <div style={holder}>
       <div style={titleStyle}>
         <span>{title}:</span>&nbsp;&nbsp;
         <span style={{
           color: '#5abcad',
           fontSize: 14
-        }}>{`${selection[0].toLocaleString()} to ${selection[1].toLocaleString()} ${label}`}</span>
+        }}>{`${start.toLocaleString()} to ${end.toLocaleString()} ${label}`}</span>
       </div>
       <Range
         min={min}

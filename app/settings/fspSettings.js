@@ -221,7 +221,8 @@ export const controls = {
           category: 'bank',
           field: '_distanceFromBank',
           title: 'Distance from banks',
-          label: ' meters',
+          label: ' Kilometers',
+          divisor:1000,
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
@@ -230,7 +231,8 @@ export const controls = {
           category: 'atm',
           field: '_distanceFromATM',
           title: 'Distance from ATM',
-          label: ' meters',
+          label: ' Kilometers',
+          divisor:1000,
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
