@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import Dropdown from 'rc-dropdown'
-import Menu, {Item as MenuItem, Divider, SubMenu} from 'rc-menu'
+import Menu, {Item as MenuItem, Divider, SubMenu} from 'rc-menu';
 import 'rc-dropdown/assets/index.css';
 import 'rc-menu/assets/index.css';
-import style from './style.css'
+import {menu as fspMenu} from '../../settings/fspSettings';
+import './style.css'
 import {createHashHistory} from 'history'
 const history = createHashHistory({queryKey: false});
 class FSPMenu extends Component {
@@ -29,7 +30,7 @@ class FSPMenu extends Component {
     }
 
     getDefaultView() {
-        return 'uganda/qn1';
+        return 'uganda/mobilemoney';
     }
 
     handleDropdownChanges(selectedFilters) {
@@ -37,7 +38,6 @@ class FSPMenu extends Component {
         const split = selected.split('/');
         const country = split[0];
         const view = split[1];
-        console.log("stateTo Load", {country, view});
         history.replace(`/fsp/${country}/${view}`);
     }
 
@@ -51,7 +51,7 @@ class FSPMenu extends Component {
                 onDeselect={this.onSelect.bind(this)}
                 className={this.props.multiple ? 'checkboxes' : ''}
             >
-                {options.map(({id, description, subMenu}) => {
+                {fspMenu.map(({id, description, subMenu}) => {
                         if (subMenu) {
                             return (
                                 <SubMenu title={description} key={id}>
@@ -85,34 +85,5 @@ class FSPMenu extends Component {
 
 
 }
-
-const options = [
-    {
-        id: 'uganda',
-        description: 'Financial Services Uganda',
-        subMenu: [
-            {
-                id: 'mobilemoney',
-                description: 'Mobile Money Agents'
-            },
-            {
-                id: 'qn2',
-                description: 'Distance from Banks/ATMs'
-            },
-            {
-                id: 'qn3',
-                description: 'Distribution of Banks'
-            },
-            {
-                id: 'qn4',
-                description: 'Distribution of FSPs'
-            }
-        ]
-    },
-    {
-        id: 'kenya',
-        description: 'Financial Services Kenya'
-    }
-];
 
 export default FSPMenu

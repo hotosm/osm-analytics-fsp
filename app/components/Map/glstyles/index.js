@@ -2,13 +2,14 @@ import buildings from './buildings.json'
 import highways from './highways.json'
 import waterways from './waterways.json'
 import pois from './pois.json'
-import mobilemoney from './mobilemoney-back.json'
+import mobilemoney from './mobilemoney.json'
 import generic from './generic.json'
+import mmdistbanks from './mmdistbanks.json'
 
 import settings from '../../../settings/settings'
 import { filters as filterOptions } from '../../../settings/options'
 
-export default function getStyle(filters, options) {
+export default function getStyle (filters, options) {
   if (!options) options = {}
   const timeFilter = options.timeFilter
   const experienceFilter = options.experienceFilter
@@ -19,6 +20,7 @@ export default function getStyle(filters, options) {
     waterways,
     mobilemoney,
     generic,
+    mmdistbanks,
     pois
   }
   var allSources = {}
@@ -31,30 +33,30 @@ export default function getStyle(filters, options) {
     })
   })
   return {
-    "version": 8,
-    "sources": allSources,
-    "layers": filters
+    'version': 8,
+    'sources': allSources,
+    'layers': filters
       .map(filter => filterStyles[filter].layers.map(layer => {
         if (!layer.id.match(/highlight/)) return layer
         if (!timeFilter && !experienceFilter) {
-          layer.filter = ["==", "_timestamp", -1]
+          layer.filter = ['==', '_timestamp', -1]
         }
         if (timeFilter) {
-          layer.filter = ["all",
-            [">=", "_timestamp", timeFilter[0]],
-            ["<=", "_timestamp", timeFilter[1]]
+          layer.filter = ['all',
+            ['>=', '_timestamp', timeFilter[0]],
+            ['<=', '_timestamp', timeFilter[1]]
           ]
         }
         if (experienceFilter) {
-          layer.filter = ["all",
-            [">=", "_userExperience", experienceFilter[0]],
-            ["<=", "_userExperience", experienceFilter[1]]
+          layer.filter = ['all',
+            ['>=', '_userExperience', experienceFilter[0]],
+            ['<=', '_userExperience', experienceFilter[1]]
           ]
         }
         return layer
       }))
       .reduce((prev, filterSources) => prev.concat(filterSources), [])
-      .sort((a,b) => {
+      .sort((a, b) => {
         if (a.id.match(/highlight/) && b.id.match(/highlight/)) return 0
         if (a.id.match(/highlight/)) return +1
         if (b.id.match(/highlight/)) return -1
@@ -63,12 +65,12 @@ export default function getStyle(filters, options) {
   }
 }
 
-export function getCompareStyles(filters, compareTimes) {
-  const beforeSource = (compareTimes[0] === 'now') ? settings['vt-source'] : settings['vt-hist-source']+'/'+compareTimes[0]
-  const afterSource = (compareTimes[1] === 'now') ? settings['vt-source'] : settings['vt-hist-source']+'/'+compareTimes[1]
+export function getCompareStyles (filters, compareTimes) {
+  const beforeSource = (compareTimes[0] === 'now') ? settings['vt-source'] : settings['vt-hist-source'] + '/' + compareTimes[0]
+  const afterSource = (compareTimes[1] === 'now') ? settings['vt-source'] : settings['vt-hist-source'] + '/' + compareTimes[1]
   var glCompareLayerStyles = {
-    before: JSON.parse(JSON.stringify(getStyle(filters, { source: beforeSource }))),
-    after: JSON.parse(JSON.stringify(getStyle(filters, { source: afterSource })))
+    before: JSON.parse(JSON.stringify(getStyle(filters, {source: beforeSource}))),
+    after: JSON.parse(JSON.stringify(getStyle(filters, {source: afterSource})))
   }
   // don't need highlight layers
   glCompareLayerStyles.before.layers = glCompareLayerStyles.before.layers.filter(layer => !layer.source.match(/highlight/))

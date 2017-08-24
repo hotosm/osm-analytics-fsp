@@ -1,5 +1,6 @@
 .rc-dropdown-menu > .rc-dropdown-menu-item:hover, .rc-dropdown-menu > .rc-dropdown-menu-item-active, .rc-dropdown-menu > .rc-dropdown-menu-item-selected {
     background-color: white;
+    cursor: pointer;
 }
 
 .rc-dropdown-menu > .rc-dropdown-menu-item-selected:after {
@@ -10,4 +11,8 @@
     top: 6px;
     right: 16px;
     color: transparent;
+    cursor: pointer;
+}
+.rc-menu-vertical > .rc-menu-item{
+    cursor: pointer;
 }
