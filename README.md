@@ -18,48 +18,48 @@ Guiding questions (features)
 
 1.	Show coverage of mobile money agents in relation to [population density, economic activity]
 a.	As a financial service provider I can then decide to or not set up a mobile money agent within that radius. This decision will ofcourse be based on how many people are found in that radius as well as the type of economic activity.
-•	Grid with population and economic activity weighted figure (determined by no. of buildings, commercial buildings and proximity to primary roads).
-•	Users will drill down to identify cells that have specific populations and economic activity.
+* Grid with population and economic activity weighted figure (determined by no. of buildings, commercial buildings and proximity to primary roads).
+* Users will drill down to identify cells that have specific populations and economic activity.
 
 What this visualizes (UI):
-•	How mobile money agents are distributed relative to population and economic activity
-•	Initial view: mm agents per grid cell
-•	Drill down using filters (range bars):
-o	Persons per mobile money agent
-o	Economic activity
-o	Population count
+* How mobile money agents are distributed relative to population and economic activity
+* Initial view: mm agents per grid cell
+* Drill down using filters (range bars):
+** Persons per mobile money agent
+** Economic activity
+** Population count
 
 2.	Show mobile money agents that are (at least) [--distance in km--] away from a [bank, of a certain provider, or other FSP type]
 a.	As a financial service provider I can then decide to or not set up a bank branch closer to the mobile money agents for them to be able to deposit the money that they collect from the mobile money users.
-•	Users can filter to identify areas with the number of MM agents at specified distances from a bank, no. within < 1km, 1-5, 5-10 km, and 10km+ (in addition to free form input for distance)
-•	Display as heatmap; further away is colored more harshly?
+* Users can filter to identify areas with the number of MM agents at specified distances from a bank, no. within < 1km, 1-5, 5-10 km, and 10km+ (in addition to free form input for distance)
+* Display as heatmap; further away is colored more harshly?
 
 What this visualizes (UI):
-•	The overall distance from mobile money agents to a specific (operator) bank. Both the presence within [distance] is important, but also underserved mobile money agents; which are outside of [distance] of any/specific operator bank.
-•	Initial View: Mobile Money agents heat map
-•	Drill down using filters:
-o	Distance to [FSP type] (range bars)
-o	All banks by default. Narrow down (select/dropdown) to specific operator
+* The overall distance from mobile money agents to a specific (operator) bank. Both the presence within [distance] is important, but also underserved mobile money agents; which are outside of [distance] of any/specific operator bank.
+* Initial View: Mobile Money agents heat map
+* Drill down using filters:
+** Distance to [FSP type] (range bars)
+** All banks by default. Narrow down (select/dropdown) to specific operator
 3.	Where are the [--ATM/Branches--] of [--Financial Service Provider--] (in relation to population density and economic activity)
 a.	As a financial service provider I can then decide to or not set up an atm or bank branch based on the presence of my competitor financial service providers.
-•	Users can select the type of service (ATM/branch) and the FSP.
-•	The map grid will show all grid cells in which the services for each selected FSP will appear.
-•	Check `operator` key
+* Users can select the type of service (ATM/branch) and the FSP.
+* The map grid will show all grid cells in which the services for each selected FSP will appear.
+* Check `operator` key
 
 What this visualizes (UI):
-•	Grid view of all banks branch
-•	Filter by FSP type and operator, population and economic activity
+* Grid view of all banks branch
+* Filter by FSP type and operator, population and economic activity
 
 4.	I want to compare the presence of different (types of)  [-Financial service Providers--]
 a.	As a financial service provider I can evaluate the areas with few competitors
-•	Users can filter a gridded map to display areas with a specific number of people per MM Agent.
-•	This can be split according to provider/network.
+* Users can filter a gridded map to display areas with a specific number of people per MM Agent.
+* This can be split according to provider/network.
 
 What this visualizes (UI):
-•	Competition between different FSPs (relative to population)
-•	Initial view:
-o	Persons per FSP Type
-o	This can then be split according to Persons per Operator (select/dropdown)
+* Competition between different FSPs (relative to population)
+* Initial view:
+** Persons per FSP Type
+** This can then be split according to Persons per Operator (select/dropdown)
 
 Data Sources
 -------------
@@ -150,7 +150,7 @@ Downscaling
  Merging.
  ---------
   Merge z0 to z12 mbtiles files
-  
+
 
 Setting up the crucher
 =============================
