@@ -1,0 +1,269 @@
+{
+  "version": 8,
+  "sources": {
+    "osm-popnbankatm-raw": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 13,
+      "maxzoom": 14
+    },
+    "osm-popnbankatm-aggregated": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 0,
+      "maxzoom": 12
+    }
+  },
+  "layers": [
+    {
+      "id": "popnbankatm-raw-building",
+      "_description":"Building",
+      "type": "fill",
+      "source": "osm-popnbankatm-raw",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#FDB863",
+        "fill-opacity": 1,
+        "fill-outline-color": "#E08214"
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Polygon"
+      ]
+    },
+    {
+      "id": "popnbankatm-raw-road",
+      "_description":"Road",
+      "type": "line",
+      "source": "osm-popnbankatm-raw",
+      "source-layer": "osm",
+      "paint": {
+        "line-width": 1,
+        "line-color": "#9e9ac8",
+        "line-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "LineString"
+      ]
+    },
+    {
+      "id": "popnbankatm-raw-agent-aggregated",
+      "_description":"Mobile money agent",
+      "type": "circle",
+      "source": "osm-popnbankatm-raw",
+      "source-layer": "osm",
+      "paint": {
+        "circle-color": "#FF0000",
+        "circle-opacity": 1
+      },
+      "filter": [
+        "==",
+        "$type",
+        "Point"
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-0",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#dfacbf"
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          1
+        ],
+        [
+          "<",
+          "_populationDensity",
+          100
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-1",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#d797af",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          100
+        ],
+        [
+          "<",
+          "_populationDensity",
+          200
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-2",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#c76e8f",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          200
+        ],
+        [
+          "<",
+          "_populationDensity",
+          300
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-3",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#b7446f",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          300
+        ],
+        [
+          "<",
+          "_populationDensity",
+          400
+        ]
+      ]
+    },
+
+    {
+      "id": "popnbankatm-aggregated-4",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#b03060",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          400
+        ],
+        [
+          "<",
+          "_populationDensity",
+          500
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-5",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#8c264c",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          500
+        ],
+        [
+          "<",
+          "_populationDensity",
+          800
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-6",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#691c39",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          800
+        ],
+        [
+          "<",
+          "_populationDensity",
+          1000
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-7",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#461326",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_populationDensity",
+          1000
+        ]
+      ]
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+

@@ -37,8 +37,7 @@ class Legend extends Component {
         })
       } else {
         legendEntries.push(
-          <li key="0"><span className={'legend-icon feature ' + this.props.featureType}></span>{featureTypeDescription}
-          </li>,
+          <li key="0"><span className={'legend-icon feature ' + this.props.featureType}></span>{featureTypeDescription}</li>,
         )
       }
 
@@ -51,7 +50,7 @@ class Legend extends Component {
         )
     } else {
       if (layers) {
-        const aggregated = layers.filter(l => l.id.match(/aggregated/))
+        const aggregated = layers.filter(l => l.id.match(/aggregated/) && !l.id.match(/raw/))
         aggregated.sort(compare)
         aggregated.forEach(({id, filter, paint}) => {
           const from = filter[1][2]
@@ -62,6 +61,8 @@ class Legend extends Component {
           )
         })
       }
+
+
       if (!layers)
         legendEntries.push(
           <li key="2"><span className={'legend-icon high ' + this.props.featureType}></span>High density

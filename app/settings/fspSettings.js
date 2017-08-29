@@ -163,11 +163,11 @@ export const menu = [
         description: 'Distance from Banks/ATMs'
       },
       {
-        id: 'qn3',
+        id: 'popnbankatm',
         description: 'Distribution of Banks'
       },
       {
-        id: 'qn4',
+        id: 'fspdistribution',
         description: 'Distribution of FSPs'
       }
     ]
@@ -212,7 +212,7 @@ export const controls = {
     },
     mmdistbanks: {
 
-      title: 'Show mobile money agents that are (at least) a distance from a bank or ATM',
+      title: 'Show Mobile Money agents that are (at least) a distance from a bank or ATM',
       legend: 'Number of Agents',
       controls: [
         {
@@ -222,7 +222,7 @@ export const controls = {
           field: '_distanceFromBank',
           title: 'Distance from banks',
           label: ' Kilometers',
-          divisor:1000,
+          divisor: 1000,
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
@@ -232,7 +232,7 @@ export const controls = {
           field: '_distanceFromATM',
           title: 'Distance from ATM',
           label: ' Kilometers',
-          divisor:1000,
+          divisor: 1000,
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
@@ -257,26 +257,39 @@ export const controls = {
         }
       ]
     },
-    qn3: {
+    popnbankatm: {
       title: 'Show location of selected banks in relation to population density and economic activity',
       controls: [
+        /*
         {
           id: 'population',
           type: 'range',
+          field: '_populationDensity',
           title: 'Population density',
           label: 'people/cell (,000)',
-          range: {max: 10, min: 0, selection: [2, 6]}
+          range: {max: 15000, min: 0, selection: [0, 15000]}
         },
+        */
         {
           id: 'economic',
           type: 'range',
+          field: '_economicActivity',
           title: 'Economic activity',
-          label: '(1 : Low , 8 : High)',
-          range: {max: 8, min: 0, selection: [2, 4]}
+          label: '(1 : Low , 10 : High)',
+          range: {max: 10, min: 0, selection: [0, 10]}
+        }, {
+          id: 'distance-selector-bank',
+          type: 'combo',
+          category: 'bank',
+          field: '_bank_',
+          data: [...selectedBanks],
+          title: 'Select bank',
+          label: ' meters',
+          range: {max: 20000, min: 0, selection: [300, 7500]}
         }
       ]
     },
-    qn4: {
+    fspdistribution: {
       title: 'Show location of Banks/ ATMs in relation to population density ',
       controls: []
     }

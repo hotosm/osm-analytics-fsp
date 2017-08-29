@@ -3,7 +3,7 @@
  * Created by Timothy on 21-Jul-17.
  */
 import React, { Component } from 'react'
-import { area, bboxPolygon, erase } from 'turf'
+import { area, bboxPolygon, erase, centroid } from 'turf'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import request from 'superagent'
@@ -12,7 +12,8 @@ import * as StatsActions from '../../actions/stats'
 import { debounce } from 'lodash'
 import regionToCoords from '../Map/regionToCoords'
 import Legend from '../Legend'
-import { controls as fspControls } from '../../settings/fspSettings'
+import { controls as fspControls, selectedBanks } from '../../settings/fspSettings'
+import { getRandomColor, getBankName, generateBankColors } from './fspUtils'
 import settings from '../../settings/settings'
 // leaflet plugins
 import '../../libs/leaflet-heat.js'
@@ -21,8 +22,8 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import glStyles from '../Map/glstyles'
 import './style.css'
-import { selectedBanks } from '../../settings/fspSettings.js'
 
+const bankColors = generateBankColors()
 var map // Leaflet map object
 var glLayer // mapbox-gl layer
 var glCompareLayers // mapbox-gl layers for before/after view
@@ -38,14 +39,17 @@ class FSPMap extends Component {
   filters = {
     bankFilter: undefined,
     atmFilter: undefined,
-    bankRange: defaultRange,// Read values from config, but thos can work well
-    atmRange: defaultRange,// Read values from config, but thos can work well
+    bankRange: defaultRange,// Read values from config, but this can work well
+    atmRange: defaultRange,// Read values from config, but this can work well
   }
   state = {}
+  bankData = undefined
+  markers = undefined
+  populationLayer = undefined
 
   render () {
     const {country, question} = this.props.routeParams
-    const layers = glStyles([question]).layers
+    let layers = glStyles([question]).layers
     const legendTitle = fspControls[country][question]['legend']
     return <div className="fspView">
       <div id="map">
@@ -101,15 +105,151 @@ class FSPMap extends Component {
     this.loadMapStyle({country, question})
   }
 
+  removeCustomLayers(){
+    if (this.markers)
+      map.removeLayer(this.markers);
+    if (this.populationLayer){
+      map.removeLayer(this.populationLayer);
+    }
+  }
+
+  getMyStyle () {
+    const style = {
+      'version': 8,
+      'sources': {
+        'osm-population-raw': {
+          'type': 'vector',
+          'tiles': [
+            'http://192.168.128.155:7778/population/{z}/{x}/{y}.pbf'
+          ],
+          'minzoom': 0,
+          'maxzoom': 14
+        }
+      },
+      'layers': [
+        {
+          'id': 'population-raw-aggregated',
+          '_description': 'Building',
+          'type': 'fill',
+          'source': 'osm-population-raw',
+          'source-layer': 'population',
+          'paint': {'fill-color': '#eee8f3', 'fill-opacity': 0.5, 'fill-outline-color': '#ffffff'},
+          'filter': ['all', ['>=', 'Popn_count', 0], ['<', 'Popn_count', 5]]
+        }
+      ]
+    }
+    const base = style.layers[0]
+    style.layers.push(
+      this.makeStyle(1, base, 5, 100, '#eee8f3'),
+      this.makeStyle(2, base, 100, 200, '#ccbadc'),
+      this.makeStyle(3, base, 200, 300, '#aa8cc5'),
+      this.makeStyle(4, base, 300, 400, '#885ead'),
+      this.makeStyle(5, base, 400, 500, '#663096'),
+      this.makeStyle(6, base, 500, 10000, '#44146f')
+    )
+    return style
+  }
+
+  makeStyle (id, base, start, end, color) {
+    return {
+      ...base,
+      id: `${base.id}-${id}`,
+      'paint': {
+        'fill-color': color, 'fill-opacity': 0.5, 'fill-outline-color': '#ffffff'
+      },
+      'filter': [
+        'all', ['>=', 'Popn_count', start], ['<', 'Popn_count', end]
+      ]
+    }
+  }
+
+  loadBankData () {
+    if (this.bankData) {
+      this.createBankLayer(this.bankData)
+    } else
+      request
+        .get('http://192.168.128.155:7778/bankatmdata')
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          if (err)
+            console.error(err)
+          else {
+            this.bankData = res.body
+            this.createBankLayer(this.bankData)
+          }
+        })
+  }
+
+  createBankLayer (bankData, filter) {
+    if (this.markers)
+      map.removeLayer(this.markers)
+    const data = {...bankData}
+    data.features = data.features.map(feature => {
+      if (feature.geometry.type !== 'Point')
+        return centroid(feature)
+      else return feature
+    })
+
+    if (filter) {
+      data.features = data.features.filter(feature => {
+        const name = getBankName(feature.properties._name)
+        return name === filter
+      })
+    }
+    this.markers = L.markerClusterGroup({
+      disableClusteringAtZoom: 14,
+      /*
+      iconCreateFunction: function (cluster) {
+        const view = `
+          <label style="display: block; background-color: cyan; border: 1px solid cyan; border-radius: 5px;width: 16px;height: 16px">
+           <b>${cluster.getChildCount()}</b>
+          </label>
+        `
+        return L.divIcon({html: view})
+      }*/
+    })
+    const geoJsonLayer = L.geoJson(data, {
+      pointToLayer: (feature, latlng) => {
+        const name = getBankName(feature.properties._name)
+        const color = bankColors[name]
+        return new L.circleMarker(latlng, {
+          radius: 6,
+          fillColor: color,
+          color: color,
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        })
+      },
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(feature.properties._name)
+      }
+    })
+    this.markers.addLayer(geoJsonLayer)
+    map.addLayer(this.markers)
+  }
+
   loadMapStyle ({country, question}) {
+    this.removeCustomLayers();
     glLayer._glMap.setStyle(glStyles([question]), {diff: false})
     const range = this.filters.bankRange
     if (question === 'mmdistbanks')
       this.sortBanksAndATMs(range[0], range[1])
+    if (question === 'popnbankatm') {
+      this.populationLayer = L.mapboxGL({
+        updateInterval: 0,
+        style: this.getMyStyle(),
+        hash: false
+      })
+      //.addTo(map)
+      setTimeout(() => {
+        this.loadBankData()
+      }, 1000)
+    }
   }
 
   focusOnRegion (region) {
-    // Send this to settings
+    // TODO Send this to settings
     const _region = 'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@'
     this.props.actions.setRegionFromUrl(_region)
   }
@@ -206,17 +346,23 @@ class FSPMap extends Component {
   setFilterChoice (filter, routeParams) {
     const {country} = routeParams
     const {question, id, choice} = filter
-    const controls = fspControls[country][question]['controls']
-    const control = controls.filter(cnt => cnt.id === id)[0]
-    let suffix = control.field
-    let choiceRange = choice ? `${suffix}${choice}` : undefined
-    if (suffix.indexOf('_bank_') >= 0) {
-      this.filters = {...this.filters, bankFilter: choiceRange || '_distanceFromBank'}
-      this.setFilter({...filter, selection: this.filters.bankRange}, routeParams)
-    } else {
-      this.filters = {...this.filters, atmFilter: choiceRange || '_distanceFromATM'}
-      this.setFilter({...filter, selection: this.filters.atmRange}, routeParams)
+    if (question === 'mmdistbanks') {
+      const controls = fspControls[country][question]['controls']
+      const control = controls.filter(cnt => cnt.id === id)[0]
+      let suffix = control.field
+      let choiceRange = choice ? `${suffix}${choice}` : undefined
+      if (suffix.indexOf('_bank_') >= 0) {
+        this.filters = {...this.filters, bankFilter: choiceRange || '_distanceFromBank'}
+        this.setFilter({...filter, selection: this.filters.bankRange}, routeParams)
+      } else {
+        this.filters = {...this.filters, atmFilter: choiceRange || '_distanceFromATM'}
+        this.setFilter({...filter, selection: this.filters.atmRange}, routeParams)
+      }
+    } else if (question === 'popnbankatm') {
+      console.log('Filters on qn 3', choice)
+      this.createBankLayer(this.bankData, choice)
     }
+
   }
 
   sortBanksAndATMs (min, max) {

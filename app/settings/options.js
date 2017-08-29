@@ -28,7 +28,12 @@ export const filters = [
     id: 'mmdistbanks',
     description: 'MM Distance from Banks',
     altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
+  },{
+    id: 'popnbankatm',
+    description: 'Population Vs Econominc',
+    altText: 'Population Vs Econominc'
   },
+
   {
     id: 'pois',
     description: 'POIs',
