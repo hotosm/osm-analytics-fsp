@@ -259,6 +259,7 @@ export const controls = {
     },
     popnbankatm: {
       title: 'Show location of selected banks in relation to population density and economic activity',
+      legend: 'Population density',
       controls: [
         /*
         {
@@ -291,6 +292,7 @@ export const controls = {
     },
     fspdistribution: {
       title: 'Show location of Banks/ ATMs in relation to population density ',
+      legend: 'Population density',
       controls: []
     }
   },

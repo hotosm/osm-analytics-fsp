@@ -105,11 +105,11 @@ class FSPMap extends Component {
     this.loadMapStyle({country, question})
   }
 
-  removeCustomLayers(){
+  removeCustomLayers () {
     if (this.markers)
-      map.removeLayer(this.markers);
-    if (this.populationLayer){
-      map.removeLayer(this.populationLayer);
+      map.removeLayer(this.markers)
+    if (this.populationLayer) {
+      map.removeLayer(this.populationLayer)
     }
   }
 
@@ -197,16 +197,7 @@ class FSPMap extends Component {
       })
     }
     this.markers = L.markerClusterGroup({
-      disableClusteringAtZoom: 14,
-      /*
-      iconCreateFunction: function (cluster) {
-        const view = `
-          <label style="display: block; background-color: cyan; border: 1px solid cyan; border-radius: 5px;width: 16px;height: 16px">
-           <b>${cluster.getChildCount()}</b>
-          </label>
-        `
-        return L.divIcon({html: view})
-      }*/
+      disableClusteringAtZoom: 14
     })
     const geoJsonLayer = L.geoJson(data, {
       pointToLayer: (feature, latlng) => {
@@ -227,10 +218,31 @@ class FSPMap extends Component {
     })
     this.markers.addLayer(geoJsonLayer)
     map.addLayer(this.markers)
+
+    const counts = {}
+    data.features.forEach(feature => {
+      const name = getBankName(feature.properties._name)
+      if (!counts[name])
+        counts[name] = 1
+      else
+        counts[name] += 1
+    })
+
+    const bankCounts = Object.keys(counts).map(key => {return {name: key, count: counts[key]}})
+    bankCounts.sort((a, b) => {
+      if (a.count < b.count)
+        return 1;
+      else if (a.count > b.count)
+        return -1;
+      else
+        return 0;
+    })
+    console.log('Counts', bankCounts)
+    this.props.statsActions.setBankSortOder({bankCounts, atmCounts:[]})
   }
 
   loadMapStyle ({country, question}) {
-    this.removeCustomLayers();
+    this.removeCustomLayers()
     glLayer._glMap.setStyle(glStyles([question]), {diff: false})
     const range = this.filters.bankRange
     if (question === 'mmdistbanks')

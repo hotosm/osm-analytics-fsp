@@ -3,9 +3,10 @@ import highways from './highways.json'
 import waterways from './waterways.json'
 import pois from './pois.json'
 import mobilemoney from './mobilemoney.json'
-import generic from './generic.json'
 import mmdistbanks from './mmdistbanks.json'
 import popnbankatm from './popnbankatm.json'
+import fspdistribution from './population-style'
+
 
 import settings from '../../../settings/settings'
 import { filters as filterOptions } from '../../../settings/options'
@@ -20,9 +21,9 @@ export default function getStyle (filters, options) {
     highways,
     waterways,
     mobilemoney,
-    generic,
     mmdistbanks,
     popnbankatm,
+    fspdistribution,
     pois
   }
   var allSources = {}
