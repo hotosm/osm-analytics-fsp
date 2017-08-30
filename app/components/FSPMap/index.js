@@ -168,7 +168,7 @@ class FSPMap extends Component {
       this.createBankLayer(this.bankData)
     } else
       request
-        .get('http://192.168.128.155:7778/bankatmdata')
+        .get(`${settings['vt-source']}/bankatmdata`)
         .set('Accept', 'application/json')
         .end((err, res) => {
           if (err)
@@ -256,7 +256,7 @@ class FSPMap extends Component {
       //.addTo(map)
       setTimeout(() => {
         this.loadBankData()
-      }, 1000)
+      }, 200)
     }
   }
 
