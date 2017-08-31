@@ -58,9 +58,10 @@ class FSPBar extends Component {
   render () {
     const {routeParams: {country, question}, stats} = this.props
     const {title, controls} = config[country][question]
+    const percent = controls.length === 4 ? 20 : (controls.length === 3 ? 30 : 40)
     return <div id="fspbar" style={{overflow: 'auto'}}>
       <div style={{color: 'white', fontWeight: 'bold', fontSize: 20, padding: 15, paddingBottom: 0}}>
-        <span>{title}</span>
+        <span>{title}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style={{fontSize: 14,fontWeight:'normal'}}>Disclaimer: <i>todo get this from Alyssa</i></span>
       </div>
       <div style={{
         display: 'flex',
@@ -73,7 +74,7 @@ class FSPBar extends Component {
           controls.map(({type, title, label, range, id, data, category, divisor}) => {
             if (type === 'range') {
               return (
-                <div key={id} style={{width: 350, margin: 10}}>
+                <div key={id} style={{width: `${percent}%`, margin: 10}}>
                   <RangeSelector title={title}
                                  label={label}
                                  range={range}
