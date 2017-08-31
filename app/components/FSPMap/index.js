@@ -3,7 +3,7 @@
  * Created by Timothy on 21-Jul-17.
  */
 import React, { Component } from 'react'
-import { area, bboxPolygon, erase, centroid } from 'turf'
+import { area, bboxPolygon, centroid, erase } from 'turf'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import request from 'superagent'
@@ -12,8 +12,8 @@ import * as StatsActions from '../../actions/stats'
 import { debounce } from 'lodash'
 import regionToCoords from '../Map/regionToCoords'
 import Legend from '../Legend'
-import { controls as fspControls, selectedBanks } from '../../settings/fspSettings'
-import { getRandomColor, getBankName, generateBankColors } from './fspUtils'
+import { controls as fspControls } from '../../settings/fspSettings'
+import { generateBankColors, getBankName } from './fspUtils'
 import settings from '../../settings/settings'
 // leaflet plugins
 import '../../libs/leaflet-heat.js'
@@ -24,16 +24,31 @@ import glStyles from '../Map/glstyles'
 import './style.css'
 
 const bankColors = generateBankColors()
-var map // Leaflet map object
-var glLayer // mapbox-gl layer
-var glCompareLayers // mapbox-gl layers for before/after view
-var boundsLayer = null // selected region layer
-var moveDirectly = false
+let map // Leaflet map object
+let glLayer // mapbox-gl layer
+let glCompareLayers // mapbox-gl layers for before/after view
+let boundsLayer = null // selected region layer
+let moveDirectly = false
 
 Array.prototype.flatMap = function (lambda) {
   return Array.prototype.concat.apply([], this.map(lambda))
 }
 const defaultRange = [0, 100000]
+const MyLegend = ({data = []}) => {
+  const iconStyle = {
+    height: 10, width: 10, display: 'inline-block',
+    backgroundColor: 'blue',
+    padding: 0
+  }
+  return (
+    <ul style={{padding: 0}}>
+      <label style={{color: 'black', fontSize: 14}}>Bank Grouping</label>
+      {data.map(({name, color}) => {
+        return <li key={name}><span style={{...iconStyle, backgroundColor: color}}/>&nbsp;&nbsp;{name}</li>
+      })}
+    </ul>
+  )
+}
 
 class FSPMap extends Component {
   filters = {
@@ -41,11 +56,13 @@ class FSPMap extends Component {
     atmFilter: undefined,
     bankRange: defaultRange,// Read values from config, but this can work well
     atmRange: defaultRange,// Read values from config, but this can work well
+
   }
-  state = {}
+  state = {
+    customLegend: undefined//Customised legend for special questions
+  }
   bankData = undefined
-  markers = undefined
-  populationLayer = undefined
+  markers = []
 
   render () {
     const {country, question} = this.props.routeParams
@@ -55,6 +72,7 @@ class FSPMap extends Component {
       <div id="map">
       </div>
       <Legend
+        customLegend={this.state.customLegend}
         title={legendTitle}
         showHighlight={false}
         layers={layers}
@@ -106,61 +124,9 @@ class FSPMap extends Component {
   }
 
   removeCustomLayers () {
-    if (this.markers)
-      map.removeLayer(this.markers)
-    if (this.populationLayer) {
-      map.removeLayer(this.populationLayer)
-    }
-  }
-
-  getMyStyle () {
-    const style = {
-      'version': 8,
-      'sources': {
-        'osm-population-raw': {
-          'type': 'vector',
-          'tiles': [
-            'http://192.168.128.155:7778/population/{z}/{x}/{y}.pbf'
-          ],
-          'minzoom': 0,
-          'maxzoom': 14
-        }
-      },
-      'layers': [
-        {
-          'id': 'population-raw-aggregated',
-          '_description': 'Building',
-          'type': 'fill',
-          'source': 'osm-population-raw',
-          'source-layer': 'population',
-          'paint': {'fill-color': '#eee8f3', 'fill-opacity': 0.5, 'fill-outline-color': '#ffffff'},
-          'filter': ['all', ['>=', 'Popn_count', 0], ['<', 'Popn_count', 5]]
-        }
-      ]
-    }
-    const base = style.layers[0]
-    style.layers.push(
-      this.makeStyle(1, base, 5, 100, '#eee8f3'),
-      this.makeStyle(2, base, 100, 200, '#ccbadc'),
-      this.makeStyle(3, base, 200, 300, '#aa8cc5'),
-      this.makeStyle(4, base, 300, 400, '#885ead'),
-      this.makeStyle(5, base, 400, 500, '#663096'),
-      this.makeStyle(6, base, 500, 10000, '#44146f')
-    )
-    return style
-  }
-
-  makeStyle (id, base, start, end, color) {
-    return {
-      ...base,
-      id: `${base.id}-${id}`,
-      'paint': {
-        'fill-color': color, 'fill-opacity': 0.5, 'fill-outline-color': '#ffffff'
-      },
-      'filter': [
-        'all', ['>=', 'Popn_count', start], ['<', 'Popn_count', end]
-      ]
-    }
+    this.markers.forEach(layer => {
+      map.removeLayer(layer)
+    })
   }
 
   loadBankData () {
@@ -180,9 +146,8 @@ class FSPMap extends Component {
         })
   }
 
-  createBankLayer (bankData, filter) {
-    if (this.markers)
-      map.removeLayer(this.markers)
+  createBankLayer (bankData, filters) {
+    this.removeCustomLayers()
     const data = {...bankData}
     data.features = data.features.map(feature => {
       if (feature.geometry.type !== 'Point')
@@ -190,37 +155,72 @@ class FSPMap extends Component {
       else return feature
     })
 
-    if (filter) {
-      data.features = data.features.filter(feature => {
-        const name = getBankName(feature.properties._name)
-        return name === filter
+    const pointToLayer = (feature, latlng) => {
+      const name = getBankName(feature.properties._name)
+      const color = bankColors[name]
+      return new L.circleMarker(latlng, {
+        radius: 6,
+        fillColor: color,
+        color: color,
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
       })
     }
-    this.markers = L.markerClusterGroup({
-      disableClusteringAtZoom: 14
-    })
-    const geoJsonLayer = L.geoJson(data, {
-      pointToLayer: (feature, latlng) => {
-        const name = getBankName(feature.properties._name)
-        const color = bankColors[name]
-        return new L.circleMarker(latlng, {
-          radius: 6,
-          fillColor: color,
-          color: color,
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8
-        })
-      },
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties._name)
-      }
-    })
-    this.markers.addLayer(geoJsonLayer)
-    map.addLayer(this.markers)
+    const onEachFeature = (feature, layer) => {
+      layer.bindPopup(feature.properties._name)
+    }
 
+    if (filters) {
+      const colors = {}
+      colors[filters[0]] = bankColors[filters[0]]
+      if (filters[1]) {
+        colors[filters[1]] = bankColors[filters[1]]
+      }
+      filters.forEach(filter => {
+        const layerData = {...data}
+        layerData.features = layerData.features.filter(feature => {
+          const name = getBankName(feature.properties._name)
+          return filter === name
+        })
+
+        const markerLayer = L.markerClusterGroup({
+          disableClusteringAtZoom: 14,
+          iconCreateFunction: function (cluster) {
+            return L.divIcon({
+              html: `
+            <div style="height: 100%;width: 100%;background: ${bankColors[filter]};padding:8px;border-radius: 5px">${cluster.getChildCount()}</div>
+            `, className: 'my-div-icon'
+            })
+          }
+          //Customize here
+        })
+        markerLayer.addLayer(L.geoJson(layerData, {
+          pointToLayer, onEachFeature
+        }))
+        map.addLayer(markerLayer)
+        this.markers.push(markerLayer)
+      })
+      this.setState({
+        customLegend: <MyLegend data={filters.map(f => {return {name: f, color: colors[f]}})}/>
+      })
+    } else {
+      const markerLayer = L.markerClusterGroup({
+        disableClusteringAtZoom: 14
+      })
+      markerLayer.addLayer(L.geoJson(data, {
+        pointToLayer, onEachFeature
+      }))
+      map.addLayer(markerLayer)
+      this.markers.push(markerLayer)
+      this.setState({
+        customLegend: undefined
+      })
+    }
+
+    // =====================
     const counts = {}
-    data.features.forEach(feature => {
+    bankData.features.forEach(feature => {
       const name = getBankName(feature.properties._name)
       if (!counts[name])
         counts[name] = 1
@@ -231,14 +231,20 @@ class FSPMap extends Component {
     const bankCounts = Object.keys(counts).map(key => {return {name: key, count: counts[key]}})
     bankCounts.sort((a, b) => {
       if (a.count < b.count)
-        return 1;
+        return 1
       else if (a.count > b.count)
-        return -1;
+        return -1
       else
-        return 0;
+        return 0
     })
-    console.log('Counts', bankCounts)
-    this.props.statsActions.setBankSortOder({bankCounts, atmCounts:[]})
+    const display = []
+    const len = bankCounts.length - 2
+    for (let i = 2; i < len; i++) {
+      display.push(bankCounts[i])
+    }
+    display.push(bankCounts[1])
+    display.push(bankCounts[0])
+    this.props.statsActions.setBankSortOder({bankCounts: display, atmCounts: []})
   }
 
   loadMapStyle ({country, question}) {
@@ -248,12 +254,6 @@ class FSPMap extends Component {
     if (question === 'mmdistbanks')
       this.sortBanksAndATMs(range[0], range[1])
     if (question === 'popnbankatm') {
-      this.populationLayer = L.mapboxGL({
-        updateInterval: 0,
-        style: this.getMyStyle(),
-        hash: false
-      })
-      //.addTo(map)
       setTimeout(() => {
         this.loadBankData()
       }, 200)
@@ -264,29 +264,6 @@ class FSPMap extends Component {
     // TODO Send this to settings
     const _region = 'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@'
     this.props.actions.setRegionFromUrl(_region)
-  }
-
-  createHeatPoints (data) {
-    const processFeature = ({geometry: {coordinates}}) => {
-      return [coordinates[1], coordinates[0], 0.7]
-    }
-    const processFeatureCollection = (coll) => {
-      return coll.features.map(processFeature)
-    }
-    const processGeoGSON = (obj) => {
-      if (obj.type === 'FeatureCollection') {
-        return processFeatureCollection(obj)
-      } else {
-        return [processFeature(obj)]
-      }
-    }
-    let points = []
-    if (Array.isArray(data)) {
-      points = data.flatMap(processGeoGSON)
-    } else {
-      points = processGeoGSON(data)
-    }
-    return points
   }
 
   componentWillReceiveProps (nextProps) {
@@ -357,12 +334,13 @@ class FSPMap extends Component {
 
   setFilterChoice (filter, routeParams) {
     const {country} = routeParams
-    const {question, id, choice} = filter
+    const {question, id, choice = {}} = filter
+    const {selected, multiSelected} = choice
     if (question === 'mmdistbanks') {
       const controls = fspControls[country][question]['controls']
       const control = controls.filter(cnt => cnt.id === id)[0]
       let suffix = control.field
-      let choiceRange = choice ? `${suffix}${choice}` : undefined
+      let choiceRange = selected ? `${suffix}${selected}` : undefined
       if (suffix.indexOf('_bank_') >= 0) {
         this.filters = {...this.filters, bankFilter: choiceRange || '_distanceFromBank'}
         this.setFilter({...filter, selection: this.filters.bankRange}, routeParams)
@@ -371,8 +349,8 @@ class FSPMap extends Component {
         this.setFilter({...filter, selection: this.filters.atmRange}, routeParams)
       }
     } else if (question === 'popnbankatm') {
-      console.log('Filters on qn 3', choice)
-      this.createBankLayer(this.bankData, choice)
+      console.log('Filters on qn 3', multiSelected)
+      this.createBankLayer(this.bankData, multiSelected)
     }
 
   }

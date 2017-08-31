@@ -19,23 +19,7 @@
     }
   },
   "layers": [
-    {
-      "id": "popnbankatm-raw-building",
-      "_description":"Building",
-      "type": "fill",
-      "source": "osm-popnbankatm-raw",
-      "source-layer": "osm",
-      "paint": {
-        "fill-color": "#FDB863",
-        "fill-opacity": 1,
-        "fill-outline-color": "#E08214"
-      },
-      "filter": [
-        "==",
-        "$type",
-        "Polygon"
-      ]
-    },
+
     {
       "id": "popnbankatm-raw-road",
       "_description":"Road",
@@ -51,22 +35,6 @@
         "==",
         "$type",
         "LineString"
-      ]
-    },
-    {
-      "id": "popnbankatm-raw-agent-aggregated",
-      "_description":"Mobile money agent",
-      "type": "circle",
-      "source": "osm-popnbankatm-raw",
-      "source-layer": "osm",
-      "paint": {
-        "circle-color": "#FF0000",
-        "circle-opacity": 1
-      },
-      "filter": [
-        "==",
-        "$type",
-        "Point"
       ]
     },
     {

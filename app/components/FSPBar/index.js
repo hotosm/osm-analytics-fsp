@@ -66,11 +66,11 @@ class FSPBar extends Component {
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        alignContent: 'space-between',
+        alignContent: 'flex-start',
         minWidth: 1280
       }}>
         {
-          controls.map(({type, title, label, range, id, data, category,divisor}) => {
+          controls.map(({type, title, label, range, id, data, category, divisor}) => {
             if (type === 'range') {
               return (
                 <div key={id} style={{width: 350, margin: 10}}>

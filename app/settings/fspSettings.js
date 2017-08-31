@@ -1,12 +1,14 @@
 export const selectedBanks = [
   {
     'name': 'Stanbic Bank',
+    'color':'#00ffff',
     'tags': [
       'Stanbic'
     ]
   },
   {
     'name': 'DFCU Bank',
+    'color':'#9932cc',
     'tags': [
       'DFCU',
       'dfcu'
@@ -14,6 +16,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Barclays Bank',
+    'color':'#ff8c00',
     'tags': [
       'Barclays',
       'barclays'
@@ -21,6 +24,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Pride Microfinance',
+    'color':'#add8e6',
     'tags': [
       'Pride Microfinance',
       'Pride Micro'
@@ -28,30 +32,35 @@ export const selectedBanks = [
   },
   {
     'name': 'Finca Bank',
+    'color':'#00ff00',
     'tags': [
       'Finca'
     ]
   },
   {
     'name': 'Finance Trust',
+    'color':'#ff00ff',
     'tags': [
       'Finance Trust'
     ]
   },
   {
     'name': 'Centenary Bank',
+    'color':'#90ee90',
     'tags': [
       'Centenary'
     ]
   },
   {
     'name': 'Bank of Africa',
+    'color':'#ffff00',
     'tags': [
       'Bank of Africa'
     ]
   },
   {
     'name': 'Kenya Commercial Bank',
+    'color':'#ffd700',
     'tags': [
       'Kenya Commercial Bank',
       'KCB',
@@ -60,18 +69,21 @@ export const selectedBanks = [
   },
   {
     'name': 'Orient Bank',
+    'color':'#90ee90',
     'tags': [
       'Orient'
     ]
   },
   {
     'name': 'Housing Finance Bank',
+    'color':'#add8e6',
     'tags': [
       'Housing Finance'
     ]
   },
   {
     'name': 'Crane Bank',
+    'color':'#ffffe0',
     'tags': [
       'Crane Bank'
     ]

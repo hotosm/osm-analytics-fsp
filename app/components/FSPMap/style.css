@@ -1,14 +1,22 @@
 .fspView {
 
-    .leaflet-bottom {
+.leaflet-bottom {
     margin-bottom: 212px;
-    }
+}
 
-    #legend {
+#legend {
     margin-bottom: 212px;
-    }
+}
+
 }
 
 #map:active {
     cursor: 'crosshair';
+}
+
+.my-div-icon {
+    width: 25px;
+    height: 25px;
+    color: black;
+    padding: 8px;
 }
