@@ -62,12 +62,13 @@ export default class FSPRadio extends Component {
     const {data = [], title, id} = this.props
     const isSelected = (value) => multiSelected.indexOf(value) >= 0
     const selectorStyle = {
-      width: 300,
+      width: '90%',
       border: '1px solid rgba(38,35,35,0.5)',
-      height: 150,
+      height: 140,
       color: 'white',
       backgroundColor: 'rgba(38,35,35,0.5)',
-      padding: 5
+      padding: 5,
+      margin: '0 auto'
     }
     const clearStyle = {
       display: 'inline-block',
@@ -81,7 +82,7 @@ export default class FSPRadio extends Component {
         <div style={{fontWeight: 'bold'}}>{title}:&nbsp;&nbsp;<label style={{color: 'white'}}>{selected}</label>
           <a href="#" style={clearStyle} onClick={this.onClear.bind(this)}>Clear</a>
         </div>
-        <div style={{overflow: 'auto', height: 120, marginTop: 5}}>
+        <div style={{overflow: 'auto', height: 'calc(100% - 25px)', marginTop: 5}}>
           {dataList.map(({name, label, count}) => {
             return <Option
               key={name}
@@ -102,7 +103,7 @@ export default class FSPRadio extends Component {
 const Option = (props) => {
   const selColor = '#6DCDCB'
   const valueDiv = {
-    height: 6,
+    height: 4,
     width: '95%',
     backgroundColor: selColor
   }

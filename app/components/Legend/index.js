@@ -53,13 +53,17 @@ class Legend extends Component {
       if (layers) {
         const aggregated = layers.filter(l => l.id.match(/aggregated/) && !l.id.match(/raw/))
         aggregated.sort(compare)
+        let count = 1
         aggregated.forEach(({id, filter, paint}) => {
           const from = filter[1][2]
           const to = filter[2] ? filter[2][2] : '.'
-          const label = `${from}   to  ${to}`
+          let label = `${from}   to  ${to}`
+          if (count === aggregated.length)
+            label = `${from} and above`
           legendEntries.push(
             <li key={id}><span style={{...iconStyle, backgroundColor: paint['fill-color']}}/>&nbsp;&nbsp;{label}</li>
           )
+          count++
         })
       }
 

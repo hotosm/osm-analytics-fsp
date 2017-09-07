@@ -69,7 +69,8 @@ class FSPBar extends Component {
         flexWrap: 'wrap',
         justifyContent: 'space-around',
         alignContent: 'flex-start',
-        minWidth: 1280
+        minWidth: 1280,
+        fontSize: 16
       }}>
         {
           controls.map(({type, title, label, range, id, data, category, divisor, multi}) => {
@@ -93,7 +94,7 @@ class FSPBar extends Component {
             }
             else {
               return (
-                <div key={id} style={{fontWeight: 'normal'}}>
+                <div key={id} style={{fontWeight: 'normal', width: `${percent}%`, margin: 10}}>
                   <FSPRadio data={data} title={title} sortOrder={sortId === id ? sortedData : undefined} id={id}
                             multi={multi}
                             onChange={(choice) => {
