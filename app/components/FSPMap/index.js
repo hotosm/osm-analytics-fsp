@@ -212,7 +212,14 @@ class FSPMap extends Component {
       })
     } else {
       const markerLayer = L.markerClusterGroup({
-        disableClusteringAtZoom: 14
+        disableClusteringAtZoom: 14,
+        iconCreateFunction: function (cluster) {
+          return L.divIcon({
+            html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
+            className: 'my-div-icon-2',
+            iconSize: L.point(40, 40)
+          })
+        }
       })
       markerLayer.addLayer(L.geoJson(data, {
         pointToLayer, onEachFeature
@@ -290,7 +297,14 @@ class FSPMap extends Component {
       })
     } else {
       const markerLayer = L.markerClusterGroup({
-        disableClusteringAtZoom: 14
+        disableClusteringAtZoom: 14,
+        iconCreateFunction: function (cluster) {
+          return L.divIcon({
+            html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
+            className: 'my-div-icon-2',
+            iconSize: L.point(40, 40)
+          })
+        }
       })
       markerLayer.addLayer(L.geoJson(data, {
         pointToLayer, onEachFeature
