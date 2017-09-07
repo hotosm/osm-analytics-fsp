@@ -5,7 +5,9 @@ import pois from './pois.json'
 import mobilemoney from './mobilemoney.json'
 import mmdistbanks from './mmdistbanks.json'
 import popnbankatm from './popnbankatm.json'
-import fspdistribution from './population-style'
+//import fspdistribution from './population-style'
+import fspdistribution from './fsp-style'
+
 
 
 import settings from '../../../settings/settings'

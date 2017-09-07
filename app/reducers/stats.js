@@ -34,9 +34,9 @@ export default handleActions({
       fspFilterChoice: action.payload
     })
   },
-  'set banks sort_order' (state, action) {
+  'set sort_order' (state, action) {
     return Object.assign({}, state, {
-      bankSortOrder: action.payload
+      sortOrder: action.payload
     })
   }
 }, initialState)

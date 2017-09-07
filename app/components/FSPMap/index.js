@@ -13,7 +13,9 @@ import { debounce } from 'lodash'
 import regionToCoords from '../Map/regionToCoords'
 import Legend from '../Legend'
 import { controls as fspControls } from '../../settings/fspSettings'
-import { generateBankColors, getBankName } from './fspUtils'
+import { generateBankColors, getBankName, classifyData, getFeatureName, getRandomColor } from './fspUtils'
+import { createStyle } from '../Map/glstyles/fsp-style'
+
 import settings from '../../settings/settings'
 // leaflet plugins
 import '../../libs/leaflet-heat.js'
@@ -62,6 +64,8 @@ class FSPMap extends Component {
     customLegend: undefined//Customised legend for special questions
   }
   bankData = undefined
+  fspData = undefined
+  currFSP = undefined
   markers = []
 
   render () {
@@ -146,6 +150,84 @@ class FSPMap extends Component {
         })
   }
 
+  createFSPMap (fspData, fsp, filters) {
+    this.removeCustomLayers()
+    const data = {...fspData}
+    data.features = data.features.map(feature => {
+      if (feature.geometry.type !== 'Point')
+        return centroid(feature)
+      else return feature
+    })
+
+    const pointToLayer = (feature, latlng) => {
+      const name = getBankName(feature)
+      const color = getRandomColor()
+      return new L.circleMarker(latlng, {
+        radius: 6,
+        fillColor: color,
+        color: color,
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      })
+    }
+    const onEachFeature = (feature, layer) => {
+      layer.bindPopup(feature.properties.name||"Unknown")
+    }
+
+    if (filters) {
+      const colors = {},classNames={}
+      colors[filters[0]] = 'greenyellow'
+      classNames[filters[0]]='my-div-icon-1'
+      if (filters[1]) {
+        colors[filters[1]] = 'yellow'
+        classNames[filters[1]]='my-div-icon-2'
+      }
+      filters.forEach(filter => {
+        const layerData = {...data}
+        layerData.features = layerData.features.filter(feature => {
+          const name = getFeatureName(feature, fsp)
+          return filter === name
+        })
+
+        const markerLayer = L.markerClusterGroup({
+          disableClusteringAtZoom: 14,
+          iconCreateFunction: function (cluster) {
+            return L.divIcon({
+              html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
+              className: classNames[filter],
+              iconSize: L.point(40, 40)
+            })
+          }
+          //Customize here
+        })
+        markerLayer.addLayer(L.geoJson(layerData, {
+          pointToLayer, onEachFeature
+        }))
+        map.addLayer(markerLayer)
+        this.markers.push(markerLayer)
+      })
+      this.setState({
+        customLegend: <MyLegend data={filters.map(f => {return {name: f, color: colors[f]}})}/>
+      })
+    } else {
+      const markerLayer = L.markerClusterGroup({
+        disableClusteringAtZoom: 14
+      })
+      markerLayer.addLayer(L.geoJson(data, {
+        pointToLayer, onEachFeature
+      }))
+      map.addLayer(markerLayer)
+      this.markers.push(markerLayer)
+      this.setState({
+        customLegend: undefined
+      })
+    }
+    const sortedData = classifyData(fspData, fsp)
+    this.props.statsActions.setSortOder({sortedData, sortId: 'qn4-operator-selector'})
+  }
+
+  // TODO This method can be removed
   createBankLayer (bankData, filters) {
     this.removeCustomLayers()
     const data = {...bankData}
@@ -156,7 +238,7 @@ class FSPMap extends Component {
     })
 
     const pointToLayer = (feature, latlng) => {
-      const name = getBankName(feature.properties._name)
+      const name = getBankName(feature)
       const color = bankColors[name]
       return new L.circleMarker(latlng, {
         radius: 6,
@@ -168,19 +250,21 @@ class FSPMap extends Component {
       })
     }
     const onEachFeature = (feature, layer) => {
-      layer.bindPopup(feature.properties._name)
+      layer.bindPopup(feature.properties._name || 'No Name')
     }
 
     if (filters) {
-      const colors = {}
-      colors[filters[0]] = bankColors[filters[0]]
+      const colors = {},classNames={}
+      colors[filters[0]] = 'greenyellow'
+      classNames[filters[0]]='my-div-icon-1'
       if (filters[1]) {
-        colors[filters[1]] = bankColors[filters[1]]
+        colors[filters[1]] = 'yellow'
+        classNames[filters[1]]='my-div-icon-2'
       }
       filters.forEach(filter => {
         const layerData = {...data}
         layerData.features = layerData.features.filter(feature => {
-          const name = getBankName(feature.properties._name)
+          const name = getBankName(feature)
           return filter === name
         })
 
@@ -188,9 +272,9 @@ class FSPMap extends Component {
           disableClusteringAtZoom: 14,
           iconCreateFunction: function (cluster) {
             return L.divIcon({
-              html: `
-            <div style="height: 100%;width: 100%;background: ${bankColors[filter]};padding:8px;border-radius: 5px">${cluster.getChildCount()}</div>
-            `, className: 'my-div-icon'
+              html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
+              className: classNames[filter],
+              iconSize: L.point(40, 40)
             })
           }
           //Customize here
@@ -221,7 +305,7 @@ class FSPMap extends Component {
     // =====================
     const counts = {}
     bankData.features.forEach(feature => {
-      const name = getBankName(feature.properties._name)
+      const name = getBankName(feature)
       if (!counts[name])
         counts[name] = 1
       else
@@ -244,7 +328,7 @@ class FSPMap extends Component {
     }
     display.push(bankCounts[1])
     display.push(bankCounts[0])
-    this.props.statsActions.setBankSortOder({bankCounts: display, atmCounts: []})
+    this.props.statsActions.setSortOder({sortedData: display, sortId: 'qn3-distance-selector-bank'})
   }
 
   loadMapStyle ({country, question}) {
@@ -256,7 +340,7 @@ class FSPMap extends Component {
     if (question === 'popnbankatm') {
       setTimeout(() => {
         this.loadBankData()
-      }, 200)
+      }, 100)
     }
   }
 
@@ -351,8 +435,39 @@ class FSPMap extends Component {
     } else if (question === 'popnbankatm') {
       console.log('Filters on qn 3', multiSelected)
       this.createBankLayer(this.bankData, multiSelected)
+    } else if (question === 'fspdistribution') {
+      if (id === 'fsp-selector') {
+        console.log('Switch FSP type', choice)
+        if (selected) {
+          this.loadFSP(selected)
+        }
+        else
+          this.removeCustomLayers()
+      } else if (id === 'qn4-operator-selector') {
+        console.log('Switch Operator', choice)
+        this.createFSPMap(this.fspData, this.currFSP, multiSelected)
+      }
     }
+  }
 
+  loadFSP (fspType) {
+    const server = settings['vt-source']
+    const path = `${server}/json/${fspType}.json`
+    console.log(path)
+    request
+      .get(path)
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err || !res.ok) {
+          console.error('Oh no! error', err)
+        } else {
+          this.fspData = res.body
+          this.currFSP = fspType
+          const newStyle = createStyle(fspType)
+          glLayer._glMap.setStyle(newStyle, {diff: false})
+          this.createFSPMap(this.fspData, fspType)
+        }
+      })
   }
 
   sortBanksAndATMs (min, max) {
@@ -365,7 +480,8 @@ class FSPMap extends Component {
           console.error('Oh no! error', err)
         } else {
           const {bankCounts, atmCounts} = res.body
-          this.props.statsActions.setBankSortOder({bankCounts, atmCounts})
+          this.props.statsActions.setSortOder({sortedData: bankCounts, sortId: 'qn2-distance-selector-bank'})
+          this.props.statsActions.setSortOder({sortedData: atmCounts, sortId: 'qn2-distance-selector-atm'})
         }
       })
   }

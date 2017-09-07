@@ -1,0 +1,220 @@
+{
+  "version": 8,
+  "sources": {
+    "osm-fspdistribution-raw": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/fspdistribution/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 13,
+      "maxzoom": 14
+    },
+    "osm-fspdistribution-aggregated": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/fspdistribution/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 0,
+      "maxzoom": 12
+    }
+  },
+  "layers": [
+    {
+      "id": "fspdistribution-aggregated-0",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffe4b2"
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          1
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          25
+        ]
+      ]
+    },
+    {
+      "id": "fspdistribution-aggregated-1",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffdb99",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          25
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          50
+        ]
+      ]
+    },
+    {
+      "id": "fspdistribution-aggregated-2",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffd27f",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          50
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          75
+        ]
+      ]
+    },
+    {
+      "id": "fspdistribution-aggregated-3",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffc04c",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          75
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          100
+        ]
+      ]
+    },
+
+    {
+      "id": "fspdistribution-aggregated-4",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffae19",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          100
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          125
+        ]
+      ]
+    },
+    {
+      "id": "fspdistribution-aggregated-5",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#ffa500",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          125
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          150
+        ]
+      ]
+    },
+    {
+      "id": "fspdistribution-aggregated-6",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#cc8400",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          150
+        ],
+        [
+          "<",
+          "_mobile_money_agentCount",
+          200
+        ]
+      ]
+    },
+    {
+      "id": "fspdistribution-aggregated-7",
+      "type": "fill",
+      "source": "osm-fspdistribution-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#996300",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_mobile_money_agentCount",
+          200
+        ]
+      ]
+    }
+    
+  ]
+}
+
+
+
+
+
+
+
+
+

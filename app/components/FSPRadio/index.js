@@ -22,6 +22,7 @@ export default class FSPRadio extends Component {
   }
 
   setSelected (value) {
+    const {multi = false} = this.props
     const {multiSelected = []} = this.state
     const newMulti = [...multiSelected]
     const len = multiSelected.length
@@ -35,8 +36,8 @@ export default class FSPRadio extends Component {
     }
     const newValue = {
       selected: value,
-      multiSelected: newMulti
-    };
+      multiSelected: multi ? newMulti : [value]
+    }
     this.setState(newValue)
     this.props.onChange(newValue)
   }
@@ -50,9 +51,15 @@ export default class FSPRadio extends Component {
     this.props.onChange(undefined)
   }
 
+  componentWillReceiveProps (nextProps) {
+    const {sortOrder} = nextProps
+    if (sortOrder)
+      this.setState({sortOrder})
+  }
+
   render () {
-    const {selected, multiSelected = []} = this.state
-    const {data = [], title, id, bankSortOrder} = this.props
+    const {selected, multiSelected = [], sortOrder} = this.state
+    const {data = [], title, id} = this.props
     const isSelected = (value) => multiSelected.indexOf(value) >= 0
     const selectorStyle = {
       width: 300,
@@ -68,28 +75,20 @@ export default class FSPRadio extends Component {
       color: '#6DCDCB',
       fontWeight: 'normal'
     }
-    let bankData = undefined
-    if (bankSortOrder) {
-      const {bankCounts, atmCounts} = bankSortOrder
-      if (id.indexOf('atm') >= 0) {
-        bankData = atmCounts
-      } else if (bankSortOrder) {
-        bankData = bankCounts
-      }
-    }
-    const dataList = bankData || data
+    const dataList = sortOrder || data
     return (
       <div style={selectorStyle}>
         <div style={{fontWeight: 'bold'}}>{title}:&nbsp;&nbsp;<label style={{color: 'white'}}>{selected}</label>
           <a href="#" style={clearStyle} onClick={this.onClear.bind(this)}>Clear</a>
         </div>
         <div style={{overflow: 'auto', height: 120, marginTop: 5}}>
-          {dataList.map(({name, count}) => {
+          {dataList.map(({name, label, count}) => {
             return <Option
               key={name}
               checked={isSelected(name)}
               onClick={() => {this.setSelected(name)}}
               name={name}
+              label={label}
               count={count}
             />
           })}
@@ -107,12 +106,12 @@ const Option = (props) => {
     width: '95%',
     backgroundColor: selColor
   }
-  const {name, count, checked, onClick} = props
+  const {name, label, count, checked, onClick} = props
   const noOfAgents = count ? count.toLocaleString() : count
   return (
     <div onClick={onClick} style={{cursor: 'pointer'}}>
       <div style={{width: '95%'}}>
-        <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{name}</label>
+        <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{label || name}</label>
         <label style={{float: 'right', color: checked ? selColor : 'white'}}>{noOfAgents}</label>
       </div>
       <div style={{...valueDiv, backgroundColor: checked ? selColor : 'gray'}} onClick={onClick}/>

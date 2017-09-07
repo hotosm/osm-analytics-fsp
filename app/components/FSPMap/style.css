@@ -14,9 +14,18 @@
     cursor: 'crosshair';
 }
 
-.my-div-icon {
-    width: 25px;
-    height: 25px;
-    color: black;
-    padding: 8px;
+.my-div-icon-1 {
+    background-color: greenyellow;
+    border-radius: 20px;
+}
+
+.my-div-icon-2 {
+    background-color: yellow;
+    border-radius: 20px;
+}
+
+.my-div-content {
+    text-align: center;
+    font-size: 12px;
+    padding-top: 10px;
 }

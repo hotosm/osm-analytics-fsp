@@ -57,11 +57,12 @@ class FSPBar extends Component {
 
   render () {
     const {routeParams: {country, question}, stats} = this.props
+    const {sortedData, sortId} = stats.sortOrder || {}
     const {title, controls} = config[country][question]
     const percent = controls.length === 4 ? 20 : (controls.length === 3 ? 30 : 40)
     return <div id="fspbar" style={{overflow: 'auto'}}>
       <div style={{color: 'white', fontWeight: 'bold', fontSize: 20, padding: 15, paddingBottom: 0}}>
-        <span>{title}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style={{fontSize: 14,fontWeight:'normal'}}>Disclaimer: <i>todo get this from Alyssa</i></span>
+        <span>{title}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style={{fontSize: 14, fontWeight: 'normal'}}>Disclaimer: <i>todo get this from Alyssa</i></span>
       </div>
       <div style={{
         display: 'flex',
@@ -71,7 +72,7 @@ class FSPBar extends Component {
         minWidth: 1280
       }}>
         {
-          controls.map(({type, title, label, range, id, data, category, divisor}) => {
+          controls.map(({type, title, label, range, id, data, category, divisor, multi}) => {
             if (type === 'range') {
               return (
                 <div key={id} style={{width: `${percent}%`, margin: 10}}>
@@ -93,7 +94,8 @@ class FSPBar extends Component {
             else {
               return (
                 <div key={id} style={{fontWeight: 'normal'}}>
-                  <FSPRadio data={data} title={title} bankSortOrder={stats.bankSortOrder} id={id}
+                  <FSPRadio data={data} title={title} sortOrder={sortId === id ? sortedData : undefined} id={id}
+                            multi={multi}
                             onChange={(choice) => {
                               this.onChoiceChanged(country, question, id, choice, category)
                             }}

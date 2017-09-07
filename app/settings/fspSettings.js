@@ -1,14 +1,14 @@
 export const selectedBanks = [
   {
     'name': 'Stanbic Bank',
-    'color':'#00ffff',
+    'color': '#00ffff',
     'tags': [
       'Stanbic'
     ]
   },
   {
     'name': 'DFCU Bank',
-    'color':'#9932cc',
+    'color': '#9932cc',
     'tags': [
       'DFCU',
       'dfcu'
@@ -16,7 +16,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Barclays Bank',
-    'color':'#ff8c00',
+    'color': '#ff8c00',
     'tags': [
       'Barclays',
       'barclays'
@@ -24,7 +24,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Pride Microfinance',
-    'color':'#add8e6',
+    'color': '#add8e6',
     'tags': [
       'Pride Microfinance',
       'Pride Micro'
@@ -32,35 +32,35 @@ export const selectedBanks = [
   },
   {
     'name': 'Finca Bank',
-    'color':'#00ff00',
+    'color': '#00ff00',
     'tags': [
       'Finca'
     ]
   },
   {
     'name': 'Finance Trust',
-    'color':'#ff00ff',
+    'color': '#ff00ff',
     'tags': [
       'Finance Trust'
     ]
   },
   {
     'name': 'Centenary Bank',
-    'color':'#90ee90',
+    'color': '#90ee90',
     'tags': [
       'Centenary'
     ]
   },
   {
     'name': 'Bank of Africa',
-    'color':'#ffff00',
+    'color': '#ffff00',
     'tags': [
       'Bank of Africa'
     ]
   },
   {
     'name': 'Kenya Commercial Bank',
-    'color':'#ffd700',
+    'color': '#ffd700',
     'tags': [
       'Kenya Commercial Bank',
       'KCB',
@@ -69,21 +69,21 @@ export const selectedBanks = [
   },
   {
     'name': 'Orient Bank',
-    'color':'#90ee90',
+    'color': '#90ee90',
     'tags': [
       'Orient'
     ]
   },
   {
     'name': 'Housing Finance Bank',
-    'color':'#add8e6',
+    'color': '#add8e6',
     'tags': [
       'Housing Finance'
     ]
   },
   {
     'name': 'Crane Bank',
-    'color':'#ffffe0',
+    'color': '#ffffe0',
     'tags': [
       'Crane Bank'
     ]
@@ -248,7 +248,7 @@ export const controls = {
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
-          id: 'distance-selector-bank',
+          id: 'qn2-distance-selector-bank',
           type: 'combo',
           category: 'bank',
           field: '_bank_',
@@ -258,7 +258,7 @@ export const controls = {
           range: {max: 20000, min: 0, selection: [300, 7500]}
         },
         {
-          id: 'distance-selector-atm',
+          id: 'qn2-distance-selector-atm',
           type: 'combo',
           category: 'atm',
           field: '_atm_',
@@ -291,7 +291,8 @@ export const controls = {
           label: '(1 : Low , 10 : High)',
           range: {max: 10, min: 0, selection: [0, 10]}
         }, {
-          id: 'distance-selector-bank',
+          id: 'qn3-distance-selector-bank',
+          multi: true,
           type: 'combo',
           category: 'bank',
           field: '_bank_',
@@ -305,7 +306,40 @@ export const controls = {
     fspdistribution: {
       title: 'Show location of Banks/ ATMs in relation to population density ',
       legend: 'Population density',
-      controls: []
+      controls: [
+        {
+          id: 'fsp-selector',
+          type: 'combo',
+          category: 'bank',
+          field: '_bank_',
+          data:
+            [
+              {name: 'mobile_money_agent', label: 'Mobile Money Agents'},
+              {name: 'atm', label: 'ATMS'},
+              {name: 'bank', label: 'Banks'},
+              {name: 'credit_institution', label: 'Credit Institution'},
+              {name: 'microfinance_bank', label: 'Microfinance Bank'},
+              {name: 'microfinance', label: 'Microfinance'},
+              {name: 'sacco', label: 'Sacco'},
+              {name: 'bureau_de_change', label: 'Bureau De Change'},
+              {name: 'money_transfer', label: 'Money Transfer'},
+              {name: 'post_office', label: 'Post Office'},
+            ],
+          title: 'Select FSP',
+          label: ' meters',
+        },
+        {
+          id: 'qn4-operator-selector',
+          type: 'combo',
+          multi: true,
+          category: 'bank',
+          field: '_bank_',
+          data: [...selectedBanks],
+          title: 'Select Operator',
+          label: ' meters',
+          range: {max: 20000, min: 0, selection: [300, 7500]}
+        }
+      ]
     }
   },
   kenya: {},
