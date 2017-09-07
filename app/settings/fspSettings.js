@@ -304,8 +304,8 @@ export const controls = {
       ]
     },
     fspdistribution: {
-      title: 'Show location of Banks/ ATMs in relation to population density ',
-      legend: 'Population density',
+      title: 'Show location of Financial Service Providers in relation to population density ',
+      legend: 'People per FSP',
       controls: [
         {
           id: 'fsp-selector',
