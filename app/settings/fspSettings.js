@@ -16,7 +16,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Barclays Bank',
-    'color': '#ff8c00',
+    'color': 'blue',
     'tags': [
       'Barclays',
       'barclays'
