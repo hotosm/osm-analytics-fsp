@@ -208,6 +208,7 @@ export const controls = {
           id: 'population',
           type: 'range',
           field: '_populationDensity',
+          fieldMin: '_populationDensity',
           title: 'Population density',
           label: 'people/cell (,000)',
           range: {max: 15000, min: 0, selection: [0, 15000]}
@@ -304,7 +305,7 @@ export const controls = {
       ]
     },
     fspdistribution: {
-      title: 'Show location of Financial Service Providers in relation to population density ',
+      title: 'Show location of Financial Service Provider(FSP) in relation to people per FSP ',
       legend: 'People per FSP',
       controls: [
         {

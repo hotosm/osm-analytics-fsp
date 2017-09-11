@@ -43,8 +43,8 @@ const MyLegend = ({data = []}) => {
     padding: 0
   }
   return (
-    <ul style={{padding: 0}}>
-      <label style={{color: 'black', fontSize: 14}}>Bank Grouping</label>
+    <ul style={{padding: 0, maxHeight: 150, overflow: 'auto'}}>
+      <label style={{color: 'black', fontSize: 14}}>Icons</label>
       {data.map(({name, color}) => {
         return <li key={name}><span style={{...iconStyle, backgroundColor: color}}/>&nbsp;&nbsp;{name}</li>
       })}
@@ -133,22 +133,7 @@ class FSPMap extends Component {
     })
   }
 
-  loadBankData () {
-    if (this.bankData) {
-      this.createBankLayer(this.bankData)
-    } else
-      request
-        .get(`${settings['vt-source']}/bankatmdata`)
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err)
-            console.error(err)
-          else {
-            this.bankData = res.body
-            this.createBankLayer(this.bankData)
-          }
-        })
-  }
+
 
   createFSPMap (fspData, fsp, filters) {
     this.removeCustomLayers()
@@ -159,31 +144,35 @@ class FSPMap extends Component {
       else return feature
     })
 
-    const pointToLayer = (feature, latlng) => {
-      const name = getBankName(feature)
-      const color = getRandomColor()
-      return new L.circleMarker(latlng, {
-        radius: 6,
-        fillColor: color,
-        color: color,
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      })
+    const pointStyle = {
+      radius: 6,
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8
     }
+
     const onEachFeature = (feature, layer) => {
-      layer.bindPopup(feature.properties.name||"Unknown")
+      layer.bindPopup(feature.properties.name || 'Unknown')
     }
 
     if (filters) {
-      const colors = {},classNames={}
+      const colors = {}, classNames = {}
       colors[filters[0]] = 'greenyellow'
-      classNames[filters[0]]='my-div-icon-1'
+      classNames[filters[0]] = 'my-div-icon-1'
       if (filters[1]) {
         colors[filters[1]] = 'yellow'
-        classNames[filters[1]]='my-div-icon-2'
+        classNames[filters[1]] = 'my-div-icon-2'
       }
       filters.forEach(filter => {
+
+        const pointToLayer = (feature, latlng) => {
+          const color = colors[filter]
+          return new L.circleMarker(latlng, {
+            ...pointStyle,
+            fillColor: color,
+            color: color,
+          })
+        }
         const layerData = {...data}
         layerData.features = layerData.features.filter(feature => {
           const name = getFeatureName(feature, fsp)
@@ -211,12 +200,24 @@ class FSPMap extends Component {
         customLegend: <MyLegend data={filters.map(f => {return {name: f, color: colors[f]}})}/>
       })
     } else {
+      const legendData = {}
+      const pointToLayer = (feature, latlng) => {
+        const name = getBankName(feature)
+        if (!legendData[name])
+          legendData[name] = getRandomColor()
+        const color = legendData[name]
+        return new L.circleMarker(latlng, {
+          ...pointStyle,
+          fillColor: color,
+          color: color,
+        })
+      }
       const markerLayer = L.markerClusterGroup({
         disableClusteringAtZoom: 14,
         iconCreateFunction: function (cluster) {
           return L.divIcon({
             html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
-            className: 'my-div-icon-2',
+            className: 'my-div-icon-gen',
             iconSize: L.point(40, 40)
           })
         }
@@ -224,125 +225,22 @@ class FSPMap extends Component {
       markerLayer.addLayer(L.geoJson(data, {
         pointToLayer, onEachFeature
       }))
+
       map.addLayer(markerLayer)
       this.markers.push(markerLayer)
+
+      const legendArray = Object.keys(legendData).map(key => { return {name: key, color: legendData[key]} })
+      String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+      }
+      const fspTitle = fsp.replace(/_/g, ' ').capitalize()
       this.setState({
-        customLegend: undefined
+        customLegend: <MyLegend data={[{name: `${fspTitle} group`, color: 'orange'}, ...legendArray]}/>
       })
     }
     const sortedData = classifyData(fspData, fsp)
     this.props.statsActions.setSortOder({sortedData, sortId: 'qn4-operator-selector'})
-  }
-
-  // TODO This method can be removed
-  createBankLayer (bankData, filters) {
-    this.removeCustomLayers()
-    const data = {...bankData}
-    data.features = data.features.map(feature => {
-      if (feature.geometry.type !== 'Point')
-        return centroid(feature)
-      else return feature
-    })
-
-    const pointToLayer = (feature, latlng) => {
-      const name = getBankName(feature)
-      const color = bankColors[name]
-      return new L.circleMarker(latlng, {
-        radius: 6,
-        fillColor: color,
-        color: color,
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      })
-    }
-    const onEachFeature = (feature, layer) => {
-      layer.bindPopup(feature.properties._name || 'No Name')
-    }
-
-    if (filters) {
-      const colors = {},classNames={}
-      colors[filters[0]] = 'greenyellow'
-      classNames[filters[0]]='my-div-icon-1'
-      if (filters[1]) {
-        colors[filters[1]] = 'yellow'
-        classNames[filters[1]]='my-div-icon-2'
-      }
-      filters.forEach(filter => {
-        const layerData = {...data}
-        layerData.features = layerData.features.filter(feature => {
-          const name = getBankName(feature)
-          return filter === name
-        })
-
-        const markerLayer = L.markerClusterGroup({
-          disableClusteringAtZoom: 14,
-          iconCreateFunction: function (cluster) {
-            return L.divIcon({
-              html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
-              className: classNames[filter],
-              iconSize: L.point(40, 40)
-            })
-          }
-          //Customize here
-        })
-        markerLayer.addLayer(L.geoJson(layerData, {
-          pointToLayer, onEachFeature
-        }))
-        map.addLayer(markerLayer)
-        this.markers.push(markerLayer)
-      })
-      this.setState({
-        customLegend: <MyLegend data={filters.map(f => {return {name: f, color: colors[f]}})}/>
-      })
-    } else {
-      const markerLayer = L.markerClusterGroup({
-        disableClusteringAtZoom: 14,
-        iconCreateFunction: function (cluster) {
-          return L.divIcon({
-            html: `<div class="my-div-content">${cluster.getChildCount()}</div>`,
-            className: 'my-div-icon-2',
-            iconSize: L.point(40, 40)
-          })
-        }
-      })
-      markerLayer.addLayer(L.geoJson(data, {
-        pointToLayer, onEachFeature
-      }))
-      map.addLayer(markerLayer)
-      this.markers.push(markerLayer)
-      this.setState({
-        customLegend: undefined
-      })
-    }
-
-    // =====================
-    const counts = {}
-    bankData.features.forEach(feature => {
-      const name = getBankName(feature)
-      if (!counts[name])
-        counts[name] = 1
-      else
-        counts[name] += 1
-    })
-
-    const bankCounts = Object.keys(counts).map(key => {return {name: key, count: counts[key]}})
-    bankCounts.sort((a, b) => {
-      if (a.count < b.count)
-        return 1
-      else if (a.count > b.count)
-        return -1
-      else
-        return 0
-    })
-    const display = []
-    const len = bankCounts.length - 2
-    for (let i = 2; i < len; i++) {
-      display.push(bankCounts[i])
-    }
-    display.push(bankCounts[1])
-    display.push(bankCounts[0])
-    this.props.statsActions.setSortOder({sortedData: display, sortId: 'qn3-distance-selector-bank'})
+    this.props.statsActions.setSortOder({sortedData: sortedData, sortId: 'qn3-distance-selector-bank'})
   }
 
   loadMapStyle ({country, question}) {
@@ -352,9 +250,7 @@ class FSPMap extends Component {
     if (question === 'mmdistbanks')
       this.sortBanksAndATMs(range[0], range[1])
     if (question === 'popnbankatm') {
-      setTimeout(() => {
-        this.loadBankData()
-      }, 100)
+      this.loadFSP('bank')
     }
   }
 
@@ -390,16 +286,20 @@ class FSPMap extends Component {
     const controls = fspControls[country][question]['controls']
     const control = controls.filter(cnt => cnt.id === id)[0]
 
+    //Banks and ATMs have special dynamic fields for filtering
     const {bankFilter, atmFilter, bankRange, atmRange} = this.filters
     const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
 
+    //If there is no special bank/ATM filter, use default filter
     let property = filterField || control.field
+    let propertyMin = filterField || control.fieldMin || control.field
     const layerIds = []
     layers.forEach(layer => {
       const currentFilter = glLayer._glMap.getFilter(layer.id) || []
       layerIds.push(layer.id)
 
       let newFilter = this.removeFilter(currentFilter, property)
+      newFilter = this.removeFilter(currentFilter, propertyMin)
       // Remove other bank filters
       if (id.indexOf('bank') >= 0) {
         newFilter = this.removeFilter(newFilter, '_bank_')
@@ -422,7 +322,7 @@ class FSPMap extends Component {
         }
         this.filters = {...this.filters, atmRange: selection}
       }
-      const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
+      const filter = [...newFilter, ['>=', propertyMin, selection[0]], ['<=', property, selection[1]]]
       glLayer._glMap.setFilter(layer.id, filter)
     })
 
@@ -448,7 +348,7 @@ class FSPMap extends Component {
       }
     } else if (question === 'popnbankatm') {
       console.log('Filters on qn 3', multiSelected)
-      this.createBankLayer(this.bankData, multiSelected)
+      this.createFSPMap(this.fspData, 'bank', multiSelected)
     } else if (question === 'fspdistribution') {
       if (id === 'fsp-selector') {
         console.log('Switch FSP type', choice)
