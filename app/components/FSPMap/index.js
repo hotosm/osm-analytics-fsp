@@ -134,9 +134,9 @@ class FSPMap extends Component {
   }
 
 
-
   createFSPMap (fspData, fsp, filters) {
     this.removeCustomLayers()
+
     const data = {...fspData}
     data.features = data.features.map(feature => {
       if (feature.geometry.type !== 'Point')
@@ -199,7 +199,8 @@ class FSPMap extends Component {
       this.setState({
         customLegend: <MyLegend data={filters.map(f => {return {name: f, color: colors[f]}})}/>
       })
-    } else {
+    }
+    else {
       const legendData = {}
       const pointToLayer = (feature, latlng) => {
         const name = getBankName(feature)
@@ -245,12 +246,15 @@ class FSPMap extends Component {
 
   loadMapStyle ({country, question}) {
     this.removeCustomLayers()
+    console.log("Loading map Style",question)
     glLayer._glMap.setStyle(glStyles([question]), {diff: false})
     const range = this.filters.bankRange
     if (question === 'mmdistbanks')
       this.sortBanksAndATMs(range[0], range[1])
     if (question === 'popnbankatm') {
       this.loadFSP('bank')
+    }else if ( question ===''){
+      this.loadFSP('mobile_money_agent')
     }
   }
 
@@ -349,10 +353,12 @@ class FSPMap extends Component {
     } else if (question === 'popnbankatm') {
       console.log('Filters on qn 3', multiSelected)
       this.createFSPMap(this.fspData, 'bank', multiSelected)
-    } else if (question === 'fspdistribution') {
+    }
+    else if (question === 'fspdistribution') {
       if (id === 'fsp-selector') {
         console.log('Switch FSP type', choice)
         if (selected) {
+          glLayer._glMap.setStyle(createStyle(selected), {diff: false})
           this.loadFSP(selected)
         }
         else
@@ -377,8 +383,6 @@ class FSPMap extends Component {
         } else {
           this.fspData = res.body
           this.currFSP = fspType
-          const newStyle = createStyle(fspType)
-          glLayer._glMap.setStyle(newStyle, {diff: false})
           this.createFSPMap(this.fspData, fspType)
         }
       })
