@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server -d --history-api-fallback --hot --inline --progress --colors --port 3000",
-    "build": "NODE_ENV=production webpack --progress --colors"
+    "build": "NODE_ENV=production webpack --progress --colors",
+    "add-tag": "node --harmony add-tag.js"
   },
   "license": "BSD-3-Clause",
   "devDependencies": {
@@ -60,7 +61,10 @@
     "webpack-hot-middleware": "^2.7.1"
   },
   "dependencies": {
+    "chroma-js": "^1.3.4",
+    "colors": "^1.1.2",
     "leaflet.markercluster": "^1.0.6",
+    "prompt": "^1.0.0",
     "rc-slider": "^8.2.0"
   }
 }

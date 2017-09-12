@@ -3,3 +3,4 @@ static
 *.log*
 node_modules/
 .idea/
+tmp/

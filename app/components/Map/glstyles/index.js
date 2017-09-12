@@ -1,34 +1,17 @@
-import buildings from './buildings.json'
-import highways from './highways.json'
-import waterways from './waterways.json'
-import pois from './pois.json'
-import mobilemoney from './mobilemoney.json'
-import mmdistbanks from './mmdistbanks.json'
-import popnbankatm from './popnbankatm.json'
-//import fspdistribution from './population-style'
-import fspdistribution from './fsp-style'
-
-
-
 import settings from '../../../settings/settings'
 import { filters as filterOptions } from '../../../settings/options'
+
+const filterStyles = {}
+filterOptions.forEach(({id}) => {
+  filterStyles[id] = require(`./${id}.json`)
+})
 
 export default function getStyle (filters, options) {
   if (!options) options = {}
   const timeFilter = options.timeFilter
   const experienceFilter = options.experienceFilter
   const server = options.source || settings['vt-source']
-  const filterStyles = {
-    buildings,
-    highways,
-    waterways,
-    mobilemoney,
-    mmdistbanks,
-    popnbankatm,
-    fspdistribution,
-    pois
-  }
-  var allSources = {}
+  const allSources = {}
   filterOptions.forEach(filterOption => {
     let style = filterOption.id
     if (!filterStyles[style]) throw new Error('gl style undefined for feature type ', filterOption)
