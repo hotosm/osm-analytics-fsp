@@ -1,6 +1,6 @@
 # Proposal: Adding Thematic Analysis to [OSM Analytics](http://osm-analytics.org/)
 
-Author(s): Timothy Kasasa(timothyk@laboremus.no), Benjamin Lutaaya(benjamin@laboremus.no)
+Author(s): [Timothy Kasasa](timothyk@laboremus.no), [Benjamin Lutaaya](benjamin@laboremus.no)
 
 Last updated: 14th Sept 2017
 
@@ -49,7 +49,7 @@ to allow for analysis against population data.
 The current cruncher overview diagram can be found [here](https://github.com/GFDRR/osm-analytics-cruncher/blob/master/documentation/diagram.pdf)
 
 #### Old Implementation
-In the old implementation, to add anew Tag, these are the steps to take. let us use waterways as an example
+In the old implementation, to add a new Tag, these are the steps to take. let us use waterways as an example
 as seen [here](https://github.com/hotosm/osm-analytics-cruncher/commit/3afb607856cf981ce59593d1f2c0404b206e1761)
 1. Create a filter configuration for the Tag
 2. Add Code to the run.sh script to enable crunching
@@ -59,7 +59,8 @@ as seen [here](https://github.com/hotosm/osm-analytics-cruncher/commit/3afb60785
 
 #### New Implementation
 With the new implementation one only needs to edit one place and the rest of the process is automated, i.e.
-Simply create the config file , and place it in `fsp-config` folder
+Simply create the config file , and place it in `fsp-config` folder,
+During the crunching process, the cruncher automatically picks aup all files placed in to config folder and processes them
 ```json
 {
     "geometry": "LineString",
@@ -71,24 +72,26 @@ Simply create the config file , and place it in `fsp-config` folder
     }
 }
 ```
-This bring down the steps from 4 to 1
-
+This bring down the steps from 4 to 1, the generated mbtiles are placed in the results directory and automatically picked up by the tile server
 
 ### Front end
 
 #### Old Implementation
-In the old implementation, to add anew Tag, you need 4 steps. let us use waterways as an example
+In the old implementation, to add anew Tag, you need 4 steps where you edit 7 location. But the most complex step is to generate the styles file.
+Ac
 as seen [here](https://github.com/hotosm/osm-analytics/commit/356880577938e05ddaa47f47dd031b7748064a10)
 1. Add tag configuration to filters in `app/settings/options.js`
-2. The most complex part is genrating a style file based on the  [Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-js/style-spec/)
+2. The most complex part is generating a style file based on the  [Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-js/style-spec/)
 3. Add the Tag to exclusion in `app/settings/options.js`
 3. Add the Tag to exclusions in `app/components/Stats/index.js`
 4. Import the style file in `app/components/Map/glstyles/index.js` and add it to the filters
-5. Finally creat cusom CSS for the legend in `app/components/Legend/style.css`
+5. Finally create custom CSS for the legend in `app/components/Legend/style.css`
 
 #### New Implementation
-With the new implementation one only needs to run a script which in turn asks the user a coupleof question and then generates
-most of the boiler plate(including the mapbox style) needed to add the Tag. The npm script however does not eddit the code but guides the user on where to put the code
+With the new implementation one only needs to run a script which in turn asks the user a couple of questions and then generates
+most of the boiler plate(including the mapbox.js style) needed to add the Tag.
+ 
+The npm script however does not edit the code but guides the user on where to place the generated code
 ```bash
 npm run add-tag
 ```
@@ -99,7 +102,6 @@ npm run add-tag
 ### Backend
 
 ### Frontend
-
 
 ## Open issues
 
