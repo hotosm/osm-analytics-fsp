@@ -104,3 +104,7 @@ button.filter {
 .mapboxgl-map {
   position: absolute !important;
 }
+
+.rc-dropdown-menu:before{
+  left: inherit !important;
+}

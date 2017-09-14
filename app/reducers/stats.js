@@ -24,19 +24,19 @@ export default handleActions({
       experienceFilter: action.payload
     })
   },
-  'set fsp_filter filter' (state, action) {
+  'set fsp_range filter' (state, action) {
     return Object.assign({}, state, {
-      fspFilter: action.payload
+      fspRangeFilter: action.payload
     })
   },
-  'set fsp_filter choice' (state, action) {
+  'set fsp_choice filter' (state, action) {
     return Object.assign({}, state, {
-      fspFilterChoice: action.payload
+      fspChoiceFilter: action.payload
     })
   },
-  'set banks sort_order' (state, action) {
+  'set sort_order' (state, action) {
     return Object.assign({}, state, {
-      bankSortOrder: action.payload
+      sortOrder: action.payload
     })
   }
 }, initialState)

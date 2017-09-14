@@ -20,14 +20,18 @@ export const filters = [
     altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
   },
   {
-    id: 'generic',
-    description: 'Generic',
-    altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
-  },
-  {
     id: 'mmdistbanks',
     description: 'MM Distance from Banks',
     altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
+  }, {
+    id: 'popnbankatm',
+    description: 'Population and Economic Activity',
+    altText: 'Population Vs Econominc'
+  },
+  {
+    id: 'fspdistribution',
+    description: 'Population',
+    altText: 'Population'
   },
   {
     id: 'pois',

@@ -34,11 +34,14 @@ class FSPBar extends Component {
         return {...ctr}
     })
     this.setState({data: {...data, controls}})
-    this.props.statsActions.setFSPFilter({country, question, id, selection, category})
+    this.props.statsActions.setFSPRangeFilter({country, question, id, selection, category})
+
     if (question === 'mmdistbanks') {
       const otherSelector = Object.keys(this.mySelectors)
         .filter(key => key !== id)
         .map(key => this.mySelectors[key])[0]
+      if (!otherSelector)
+        return
       const oSelection = otherSelector.state.selection
       const oMin = oSelection[0]
       const oMax = oSelection[1]
@@ -52,28 +55,31 @@ class FSPBar extends Component {
   }
 
   onChoiceChanged (country, question, id, choice, category) {
-    this.props.statsActions.setFSPFilterChoice({country, question, id, choice, category})
+    this.props.statsActions.setFSPChoiceFilter({country, question, id, choice, category})
   }
 
   render () {
     const {routeParams: {country, question}, stats} = this.props
+    const {sortedData, sortId} = stats.sortOrder || {}
     const {title, controls} = config[country][question]
+    const percent = controls.length === 4 ? 20 : (controls.length === 3 ? 30 : 40)
     return <div id="fspbar" style={{overflow: 'auto'}}>
       <div style={{color: 'white', fontWeight: 'bold', fontSize: 20, padding: 15, paddingBottom: 0}}>
-        <span>{title}</span>
+        <span>{title}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style={{fontSize: 14, fontWeight: 'normal'}}>Disclaimer: <i>todo get this from Alyssa</i></span>
       </div>
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        alignContent: 'space-between',
-        minWidth: 1280
+        alignContent: 'flex-start',
+        minWidth: 1280,
+        fontSize: 16
       }}>
         {
-          controls.map(({type, title, label, range, id, data, category,divisor}) => {
+          controls.map(({type, title, label, range, id, data, category, divisor, multi}) => {
             if (type === 'range') {
               return (
-                <div key={id} style={{width: 350, margin: 10}}>
+                <div key={id} style={{width: `${percent}%`, margin: 10}}>
                   <RangeSelector title={title}
                                  label={label}
                                  range={range}
@@ -83,7 +89,6 @@ class FSPBar extends Component {
                                  }}
                                  onSelectionChanged={(range) => {
                                    this.onRangeChanged(country, question, id, range, category)
-
                                  }}
                   />
                 </div>
@@ -91,8 +96,9 @@ class FSPBar extends Component {
             }
             else {
               return (
-                <div key={id} style={{fontWeight: 'normal'}}>
-                  <FSPRadio data={data} title={title} bankSortOrder={stats.bankSortOrder} id={id}
+                <div key={id} style={{fontWeight: 'normal', width: `${percent}%`, margin: 10}}>
+                  <FSPRadio data={data} title={title} sortOrder={sortId === id ? sortedData : undefined} id={id}
+                            multi={multi}
                             onChange={(choice) => {
                               this.onChoiceChanged(country, question, id, choice, category)
                             }}

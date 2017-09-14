@@ -15,65 +15,81 @@ export default class FSPRadio extends Component {
     super(params)
     // initial selected state set from props
     this.state = {
-      selected: this.props.selected
+      selected: this.props.selected,
+      multiSelected: []
     }
     this.setSelected = this.setSelected.bind(this)
   }
 
   setSelected (value) {
-    this.setState({
-      selected: value
-    })
-    this.props.onChange(value)
+    const {multi = false} = this.props
+    const {multiSelected = []} = this.state
+    const newMulti = [...multiSelected]
+    const len = multiSelected.length
+    if (multiSelected.indexOf(value) === -1) {
+      if (len === 2) {
+        newMulti[0] = newMulti[1]
+        newMulti[1] = value
+      } else if (len === 1 || len === 0) {
+        newMulti.push(value)
+      }
+    }
+    const newValue = {
+      selected: value,
+      multiSelected: multi ? newMulti : [value]
+    }
+    this.setState(newValue)
+    this.props.onChange(newValue)
   }
 
   onClear (e) {
     e.preventDefault()
     this.setState({
-      selected: undefined
+      selected: undefined,
+      multiSelected: []
     })
     this.props.onChange(undefined)
   }
 
-  render () {
-    const {selected} = this.state
-    const {data = [], title, id, bankSortOrder} = this.props
+  componentWillReceiveProps (nextProps) {
+    const {sortOrder} = nextProps
+    if (sortOrder)
+      this.setState({sortOrder})
+  }
 
+  render () {
+    const {selected, multiSelected = [], sortOrder} = this.state
+    const {data = [], title, id} = this.props
+    const isSelected = (value) => multiSelected.indexOf(value) >= 0
     const selectorStyle = {
-      width: 300,
+      width: '90%',
       border: '1px solid rgba(38,35,35,0.5)',
-      height: 150,
+      height: 140,
       color: 'white',
       backgroundColor: 'rgba(38,35,35,0.5)',
-      padding: 5
+      padding: 5,
+      margin: '0 auto'
     }
     const clearStyle = {
       display: 'inline-block',
       float: 'right',
       color: '#6DCDCB',
+      fontWeight: 'normal'
     }
-    let bankData = undefined
-    if (bankSortOrder) {
-      const {bankCounts, atmCounts} = bankSortOrder
-      if (id.indexOf('atm') >= 0) {
-        bankData = atmCounts
-      } else if (bankSortOrder) {
-        bankData = bankCounts
-      }
-    }
-    const dataList = bankData || data
+    const dataList = sortOrder || data
     return (
       <div style={selectorStyle}>
         <div style={{fontWeight: 'bold'}}>{title}:&nbsp;&nbsp;<label style={{color: 'white'}}>{selected}</label>
           <a href="#" style={clearStyle} onClick={this.onClear.bind(this)}>Clear</a>
         </div>
-        <div style={{overflow: 'auto', height: 120, marginTop: 5}}>
-          {dataList.map(({name, count}) => {
+        <div style={{overflow: 'auto', height: 'calc(100% - 25px)', marginTop: 5}}>
+          {dataList.map(({name, label, count}) => {
             return <Option
               key={name}
-              checked={selected === name}
+              checked={isSelected(name)}
               onClick={() => {this.setSelected(name)}}
               name={name}
+              label={label}
               count={count}
             />
           })}
@@ -87,16 +103,16 @@ export default class FSPRadio extends Component {
 const Option = (props) => {
   const selColor = '#6DCDCB'
   const valueDiv = {
-    height: 6,
+    height: 4,
     width: '95%',
     backgroundColor: selColor
   }
-  const {name, count, checked, onClick} = props
+  const {name, label, count, checked, onClick} = props
   const noOfAgents = count ? count.toLocaleString() : count
   return (
     <div onClick={onClick} style={{cursor: 'pointer'}}>
-      <div style={{width:'95%'}}>
-        <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{name}</label>
+      <div style={{width: '95%'}}>
+        <label style={{cursor: 'pointer', color: checked ? selColor : 'white'}}>{label || name}</label>
         <label style={{float: 'right', color: checked ? selColor : 'white'}}>{noOfAgents}</label>
       </div>
       <div style={{...valueDiv, backgroundColor: checked ? selColor : 'gray'}} onClick={onClick}/>

@@ -1,7 +1,7 @@
 {
   "version": 8,
   "sources": {
-    "osm-mobilemoney-raw": {
+    "osm-popnbankatm-raw": {
       "type": "vector",
       "tiles": [
         "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
@@ -9,7 +9,7 @@
       "minzoom": 13,
       "maxzoom": 14
     },
-    "osm-mobilemoney-aggregated": {
+    "osm-popnbankatm-aggregated": {
       "type": "vector",
       "tiles": [
         "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
@@ -19,28 +19,12 @@
     }
   },
   "layers": [
+
     {
-      "id": "mobilemoney-raw-building",
-      "_description": "Building",
-      "type": "fill",
-      "source": "osm-mobilemoney-raw",
-      "source-layer": "osm",
-      "paint": {
-        "fill-color": "#FDB863",
-        "fill-opacity": 1,
-        "fill-outline-color": "#E08214"
-      },
-      "filter": [
-        "==",
-        "$type",
-        "Polygon"
-      ]
-    },
-    {
-      "id": "mobilemoney-raw-road",
-      "_description": "Road",
+      "id": "popnbankatm-raw-road",
+      "_description":"Road",
       "type": "line",
-      "source": "osm-mobilemoney-raw",
+      "source": "osm-popnbankatm-raw",
       "source-layer": "osm",
       "paint": {
         "line-width": 1,
@@ -54,207 +38,189 @@
       ]
     },
     {
-      "id": "mobilemoney-raw-agent-aggregated",
-      "_description": "Mobile money agent",
-      "type": "circle",
-      "source": "osm-mobilemoney-raw",
-      "source-layer": "osm",
-      "paint": {
-        "circle-color": "#FF0000",
-        "circle-opacity": 1
-      },
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "Point"
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-0",
+      "id": "popnbankatm-aggregated-0",
       "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
+      "source": "osm-popnbankatm-aggregated",
       "source-layer": "osm",
       "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#ffe4b2"
+        "fill-color": "#dfacbf"
       },
       "filter": [
         "all",
         [
           ">=",
-          "_noOfMMAgents",
+          "_population",
           1
         ],
         [
           "<",
-          "_noOfMMAgents",
-          25
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-1",
-      "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
-      "source-layer": "osm",
-      "maxzoom": 12.01,
-      "paint": {
-        "fill-color": "#ffdb99",
-        "fill-antialias": false
-      },
-      "filter": [
-        "all",
-        [
-          ">=",
-          "_noOfMMAgents",
-          25
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
-          50
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-2",
-      "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
-      "source-layer": "osm",
-      "maxzoom": 12.01,
-      "paint": {
-        "fill-color": "#ffd27f",
-        "fill-antialias": false
-      },
-      "filter": [
-        "all",
-        [
-          ">=",
-          "_noOfMMAgents",
-          50
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
-          75
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-3",
-      "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
-      "source-layer": "osm",
-      "maxzoom": 12.01,
-      "paint": {
-        "fill-color": "#ffc04c",
-        "fill-antialias": false
-      },
-      "filter": [
-        "all",
-        [
-          ">=",
-          "_noOfMMAgents",
-          75
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
+          "_population",
           100
         ]
       ]
     },
     {
-      "id": "mobilemoney-aggregated-4",
+      "id": "popnbankatm-aggregated-1",
       "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
+      "source": "osm-popnbankatm-aggregated",
       "source-layer": "osm",
       "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#ffae19",
+        "fill-color": "#d797af",
         "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
-          "_noOfMMAgents",
+          "_population",
           100
         ],
         [
           "<",
-          "_noOfMMAgents",
-          125
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-5",
-      "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
-      "source-layer": "osm",
-      "maxzoom": 12.01,
-      "paint": {
-        "fill-color": "#ffa500",
-        "fill-antialias": false
-      },
-      "filter": [
-        "all",
-        [
-          ">=",
-          "_noOfMMAgents",
-          125
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
-          150
-        ]
-      ]
-    },
-    {
-      "id": "mobilemoney-aggregated-6",
-      "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
-      "source-layer": "osm",
-      "maxzoom": 12.01,
-      "paint": {
-        "fill-color": "#cc8400",
-        "fill-antialias": false
-      },
-      "filter": [
-        "all",
-        [
-          ">=",
-          "_noOfMMAgents",
-          150
-        ],
-        [
-          "<",
-          "_noOfMMAgents",
+          "_population",
           200
         ]
       ]
     },
     {
-      "id": "mobilemoney-aggregated-7",
+      "id": "popnbankatm-aggregated-2",
       "type": "fill",
-      "source": "osm-mobilemoney-aggregated",
+      "source": "osm-popnbankatm-aggregated",
       "source-layer": "osm",
       "maxzoom": 12.01,
       "paint": {
-        "fill-color": "#996300",
+        "fill-color": "#c76e8f",
         "fill-antialias": false
       },
       "filter": [
         "all",
         [
           ">=",
-          "_noOfMMAgents",
+          "_population",
           200
+        ],
+        [
+          "<",
+          "_population",
+          300
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-3",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#b7446f",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_population",
+          300
+        ],
+        [
+          "<",
+          "_population",
+          400
+        ]
+      ]
+    },
+
+    {
+      "id": "popnbankatm-aggregated-4",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#b03060",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_population",
+          400
+        ],
+        [
+          "<",
+          "_population",
+          500
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-5",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#8c264c",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_population",
+          500
+        ],
+        [
+          "<",
+          "_population",
+          800
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-6",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#691c39",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_population",
+          800
+        ],
+        [
+          "<",
+          "_population",
+          1000
+        ]
+      ]
+    },
+    {
+      "id": "popnbankatm-aggregated-7",
+      "type": "fill",
+      "source": "osm-popnbankatm-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#461326",
+        "fill-antialias": false
+      },
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_population",
+          1000
         ]
       ]
     }

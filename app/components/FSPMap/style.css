@@ -1,14 +1,37 @@
 .fspView {
 
-    .leaflet-bottom {
+.leaflet-bottom {
     margin-bottom: 212px;
-    }
+}
 
-    #legend {
+#legend {
     margin-bottom: 212px;
-    }
+}
+
 }
 
 #map:active {
     cursor: 'crosshair';
+}
+
+.my-div-icon-1 {
+    background-color: greenyellow;
+    border-radius: 20px;
+}
+
+.my-div-icon-2 {
+    background-color: yellow;
+    border-radius: 20px;
+}
+
+
+.my-div-icon-gen {
+    background-color: orange;
+    border-radius: 20px;
+}
+
+.my-div-content {
+    text-align: center;
+    font-size: 12px;
+    padding-top: 10px;
 }

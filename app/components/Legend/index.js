@@ -19,7 +19,7 @@ class Legend extends Component {
   state = {}
 
   render () {
-    const {showHighlight = true, layers, title = 'Map Legend'} = this.props
+    const {showHighlight = true, layers, title = 'Map Legend', customLegend} = this.props
     const featureTypeDescription = featureTypeOptions.find(f => f.id === this.props.featureType).description
     const iconStyle = {
       height: 10, width: 10, display: 'inline-block',
@@ -46,46 +46,51 @@ class Legend extends Component {
         legendEntries.push(
           <li key="1">
             <span
-              className={'legend-icon feature highlight ' + this.props.featureType}></span>Highlighted {featureTypeDescription.toLowerCase()}
+              className={'legend-icon feature highlight ' + this.props.featureType}/>Highlighted {featureTypeDescription.toLowerCase()}
           </li>
         )
     } else {
       if (layers) {
-        const aggregated = layers.filter(l => l.id.match(/aggregated/))
+        const aggregated = layers.filter(l => l.id.match(/aggregated/) && !l.id.match(/raw/))
         aggregated.sort(compare)
+        let count = 1
         aggregated.forEach(({id, filter, paint}) => {
           const from = filter[1][2]
           const to = filter[2] ? filter[2][2] : '.'
-          const label = `${from}   to  ${to}`
+          let label = `${from}   to  ${to}`
+          if (count === aggregated.length)
+            label = `${from} and above`
           legendEntries.push(
             <li key={id}><span style={{...iconStyle, backgroundColor: paint['fill-color']}}/>&nbsp;&nbsp;{label}</li>
           )
+          count++
         })
       }
+
       if (!layers)
         legendEntries.push(
-          <li key="2"><span className={'legend-icon high ' + this.props.featureType}></span>High density
+          <li key="2"><span className={'legend-icon high ' + this.props.featureType}/>High density
             of {featureTypeDescription.toLowerCase()}</li>,
-          <li key="3"><span className={'legend-icon mid ' + this.props.featureType}></span>Medium density
+          <li key="3"><span className={'legend-icon mid ' + this.props.featureType}/>Medium density
             of {featureTypeDescription.toLowerCase()}</li>,
-          <li key="4"><span className={'legend-icon low ' + this.props.featureType}></span>Low density
+          <li key="4"><span className={'legend-icon low ' + this.props.featureType}/>Low density
             of {featureTypeDescription.toLowerCase()}</li>,
         )
 
       if (showHighlight)
         legendEntries.push(
-          <li key="5"><span className={'legend-icon highlight ' + this.props.featureType}></span>Area with mostly
+          <li key="5"><span className={'legend-icon highlight ' + this.props.featureType}/>Area with mostly
             highlighted {featureTypeDescription.toLowerCase()}</li>
         )
     }
     if (this.props.hotOverlayEnabled) {
       legendEntries.push(
-        <li key="6"><span className={'legend-icon hot-projects'}></span>HOT project outline</li>
+        <li key="6"><span className={'legend-icon hot-projects'}/>HOT project outline</li>
       )
     }
     return (
-
       <ul id="legend">
+        {customLegend}
         <li><h3>{title}</h3></li>
         {legendEntries}
         <li>Last Data Update: {this.state.lastModified

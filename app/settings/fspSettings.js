@@ -1,12 +1,14 @@
 export const selectedBanks = [
   {
     'name': 'Stanbic Bank',
+    'color': '#00ffff',
     'tags': [
       'Stanbic'
     ]
   },
   {
     'name': 'DFCU Bank',
+    'color': '#9932cc',
     'tags': [
       'DFCU',
       'dfcu'
@@ -14,6 +16,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Barclays Bank',
+    'color': 'blue',
     'tags': [
       'Barclays',
       'barclays'
@@ -21,6 +24,7 @@ export const selectedBanks = [
   },
   {
     'name': 'Pride Microfinance',
+    'color': '#add8e6',
     'tags': [
       'Pride Microfinance',
       'Pride Micro'
@@ -28,30 +32,35 @@ export const selectedBanks = [
   },
   {
     'name': 'Finca Bank',
+    'color': '#00ff00',
     'tags': [
       'Finca'
     ]
   },
   {
     'name': 'Finance Trust',
+    'color': '#ff00ff',
     'tags': [
       'Finance Trust'
     ]
   },
   {
     'name': 'Centenary Bank',
+    'color': '#90ee90',
     'tags': [
       'Centenary'
     ]
   },
   {
     'name': 'Bank of Africa',
+    'color': '#ffff00',
     'tags': [
       'Bank of Africa'
     ]
   },
   {
     'name': 'Kenya Commercial Bank',
+    'color': '#ffd700',
     'tags': [
       'Kenya Commercial Bank',
       'KCB',
@@ -60,18 +69,21 @@ export const selectedBanks = [
   },
   {
     'name': 'Orient Bank',
+    'color': '#90ee90',
     'tags': [
       'Orient'
     ]
   },
   {
     'name': 'Housing Finance Bank',
+    'color': '#add8e6',
     'tags': [
       'Housing Finance'
     ]
   },
   {
     'name': 'Crane Bank',
+    'color': '#ffffe0',
     'tags': [
       'Crane Bank'
     ]
@@ -163,11 +175,11 @@ export const menu = [
         description: 'Distance from Banks/ATMs'
       },
       {
-        id: 'qn3',
+        id: 'popnbankatm',
         description: 'Distribution of Banks'
       },
       {
-        id: 'qn4',
+        id: 'fspdistribution',
         description: 'Distribution of FSPs'
       }
     ]
@@ -180,6 +192,7 @@ export const menu = [
 
 export const controls = {
   uganda: {
+    region:'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@',
     mobilemoney: {
       title: 'Mobile money agents in relation to population and economic activity',
       legend: 'Number of Agents',
@@ -196,6 +209,7 @@ export const controls = {
           id: 'population',
           type: 'range',
           field: '_populationDensity',
+          fieldMin: '_populationDensity',
           title: 'Population density',
           label: 'people/cell (,000)',
           range: {max: 15000, min: 0, selection: [0, 15000]}
@@ -212,7 +226,7 @@ export const controls = {
     },
     mmdistbanks: {
 
-      title: 'Show mobile money agents that are (at least) a distance from a bank or ATM',
+      title: 'Show Mobile Money agents that are (at least) a distance from a bank or ATM',
       legend: 'Number of Agents',
       controls: [
         {
@@ -222,7 +236,7 @@ export const controls = {
           field: '_distanceFromBank',
           title: 'Distance from banks',
           label: ' Kilometers',
-          divisor:1000,
+          divisor: 1000,
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
@@ -232,11 +246,11 @@ export const controls = {
           field: '_distanceFromATM',
           title: 'Distance from ATM',
           label: ' Kilometers',
-          divisor:1000,
+          divisor: 1000,
           range: {max: 10000, min: 0, selection: [0, 10000]}
         },
         {
-          id: 'distance-selector-bank',
+          id: 'qn2-distance-selector-bank',
           type: 'combo',
           category: 'bank',
           field: '_bank_',
@@ -246,7 +260,7 @@ export const controls = {
           range: {max: 20000, min: 0, selection: [300, 7500]}
         },
         {
-          id: 'distance-selector-atm',
+          id: 'qn2-distance-selector-atm',
           type: 'combo',
           category: 'atm',
           field: '_atm_',
@@ -257,28 +271,77 @@ export const controls = {
         }
       ]
     },
-    qn3: {
+    popnbankatm: {
       title: 'Show location of selected banks in relation to population density and economic activity',
+      legend: 'Population density',
       controls: [
+        /*
         {
           id: 'population',
           type: 'range',
+          field: '_populationDensity',
           title: 'Population density',
           label: 'people/cell (,000)',
-          range: {max: 10, min: 0, selection: [2, 6]}
+          range: {max: 15000, min: 0, selection: [0, 15000]}
         },
+        */
         {
           id: 'economic',
           type: 'range',
+          field: '_economicActivity',
           title: 'Economic activity',
-          label: '(1 : Low , 8 : High)',
-          range: {max: 8, min: 0, selection: [2, 4]}
+          label: '(1 : Low , 10 : High)',
+          range: {max: 10, min: 0, selection: [0, 10]}
+        }, {
+          id: 'qn3-distance-selector-bank',
+          multi: true,
+          type: 'combo',
+          category: 'bank',
+          field: '_bank_',
+          data: [...selectedBanks],
+          title: 'Select bank',
+          label: ' meters',
+          range: {max: 20000, min: 0, selection: [300, 7500]}
         }
       ]
     },
-    qn4: {
-      title: 'Show location of Banks/ ATMs in relation to population density ',
-      controls: []
+    fspdistribution: {
+      title: 'Show location of Financial Service Provider(FSP) in relation to people per FSP ',
+      legend: 'People per FSP',
+      controls: [
+        {
+          id: 'fsp-selector',
+          type: 'combo',
+          category: 'bank',
+          field: '_bank_',
+          data:
+            [
+              {name: 'mobile_money_agent', label: 'Mobile Money Agents'},
+              {name: 'atm', label: 'ATMS'},
+              {name: 'bank', label: 'Banks'},
+              {name: 'credit_institution', label: 'Credit Institution'},
+              {name: 'microfinance_bank', label: 'Microfinance Bank'},
+              {name: 'microfinance', label: 'Microfinance'},
+              {name: 'sacco', label: 'Sacco'},
+              {name: 'bureau_de_change', label: 'Bureau De Change'},
+              {name: 'money_transfer', label: 'Money Transfer'},
+              {name: 'post_office', label: 'Post Office'},
+            ],
+          title: 'Select FSP',
+          label: ' meters',
+        },
+        {
+          id: 'qn4-operator-selector',
+          type: 'combo',
+          multi: true,
+          category: 'bank',
+          field: '_bank_',
+          data: [...selectedBanks],
+          title: 'Select Operator',
+          label: ' meters',
+          range: {max: 20000, min: 0, selection: [300, 7500]}
+        }
+      ]
     }
   },
   kenya: {},
