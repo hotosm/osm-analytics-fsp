@@ -192,6 +192,7 @@ export const menu = [
 
 export const controls = {
   uganda: {
+    region:'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@',
     mobilemoney: {
       title: 'Mobile money agents in relation to population and economic activity',
       legend: 'Number of Agents',

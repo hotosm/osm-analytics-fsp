@@ -53,7 +53,7 @@ const MyLegend = ({data = []}) => {
 }
 
 class FSPMap extends Component {
-  filters = {
+  qn2 = {
     bankFilter: undefined,
     atmFilter: undefined,
     bankRange: defaultRange,// Read values from config, but this can work well
@@ -115,7 +115,7 @@ class FSPMap extends Component {
       zIndex: -1
     }).addTo(map)
     // Pass proper value
-    this.focusOnRegion('')
+
     if (!mapboxgl.supported()) {
       alert('This browser does not support WebGL which is required to run this application. Please check that you are using a supported browser and that WebGL is enabled.')
     }
@@ -124,7 +124,50 @@ class FSPMap extends Component {
       style: glStyles([question]),
       hash: false
     }).addTo(map)
+
     this.loadMapStyle({country, question})
+  }
+
+  componentWillReceiveProps (nextProps) {
+    // In case we change question
+    if (nextProps.routeParams !== this.props.routeParams) {
+      this.loadMapStyle(nextProps.routeParams)
+    }
+
+    // check for changed map parameters
+    if (nextProps.map.region !== this.props.map.region) {
+      this.mapSetRegion(nextProps.map.region)
+    }
+
+    if (nextProps.stats.fspRangeFilter !== this.props.stats.fspRangeFilter) {
+      this.setRangeFilter(nextProps.stats.fspRangeFilter, nextProps.routeParams)
+    }
+
+    if (nextProps.stats.fspChoiceFilter !== this.props.stats.fspChoiceFilter) {
+      this.setChoiceFilter(nextProps.stats.fspChoiceFilter, nextProps.routeParams)
+    }
+  }
+
+  loadMapStyle ({country, question}) {
+    console.log('Loading map Style', question)
+    this.removeCustomLayers()
+    this.focusOnRegion(country)
+    glLayer._glMap.setStyle(glStyles([question]), {diff: false})
+
+    if (question === 'mmdistbanks') {
+      const {bankRange} = this.qn2
+      this.fetchMMDistFromBanks(bankRange[0], bankRange[1])
+    }
+
+    if (question === 'popnbankatm') {
+      this.loadFSP('bank')
+    } else if (question === '') {
+      this.loadFSP('mobile_money_agent')
+    }
+  }
+
+  focusOnRegion (county) {
+    this.props.actions.setRegionFromUrl(fspControls[county].region)
   }
 
   removeCustomLayers () {
@@ -132,7 +175,6 @@ class FSPMap extends Component {
       map.removeLayer(layer)
     })
   }
-
 
   createFSPMap (fspData, fsp, filters) {
     this.removeCustomLayers()
@@ -231,8 +273,8 @@ class FSPMap extends Component {
       this.markers.push(markerLayer)
 
       const legendArray = Object.keys(legendData).map(key => { return {name: key, color: legendData[key]} })
-      String.prototype.capitalize = function() {
-        return this.charAt(0).toUpperCase() + this.slice(1);
+      String.prototype.capitalize = function () {
+        return this.charAt(0).toUpperCase() + this.slice(1)
       }
       const fspTitle = fsp.replace(/_/g, ' ').capitalize()
       this.setState({
@@ -244,44 +286,7 @@ class FSPMap extends Component {
     this.props.statsActions.setSortOder({sortedData: sortedData, sortId: 'qn3-distance-selector-bank'})
   }
 
-  loadMapStyle ({country, question}) {
-    this.removeCustomLayers()
-    console.log("Loading map Style",question)
-    glLayer._glMap.setStyle(glStyles([question]), {diff: false})
-    const range = this.filters.bankRange
-    if (question === 'mmdistbanks')
-      this.sortBanksAndATMs(range[0], range[1])
-    if (question === 'popnbankatm') {
-      this.loadFSP('bank')
-    }else if ( question ===''){
-      this.loadFSP('mobile_money_agent')
-    }
-  }
-
-  focusOnRegion (region) {
-    // TODO Send this to settings
-    const _region = 'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@'
-    this.props.actions.setRegionFromUrl(_region)
-  }
-
-  componentWillReceiveProps (nextProps) {
-    // check for changed map parameters
-    if (nextProps.map.region !== this.props.map.region) {
-      this.mapSetRegion(nextProps.map.region)
-    }
-    if (nextProps.stats.fspFilter !== this.props.stats.fspFilter) {
-      this.setFilter(nextProps.stats.fspFilter, nextProps.routeParams)
-    }
-    if (nextProps.stats.fspFilterChoice !== this.props.stats.fspFilterChoice) {
-      this.setFilterChoice(nextProps.stats.fspFilterChoice, nextProps.routeParams)
-    }
-    if (nextProps.routeParams !== this.props.routeParams) {
-      this.loadMapStyle(nextProps.routeParams)
-      this.focusOnRegion('')
-    }
-  }
-
-  setFilter (filter, routeParams) {
+  setRangeFilter (filter, routeParams) {
     console.log('Setting filter', filter)
     const {country} = routeParams
     const {question, id, selection} = filter
@@ -289,52 +294,56 @@ class FSPMap extends Component {
 
     const controls = fspControls[country][question]['controls']
     const control = controls.filter(cnt => cnt.id === id)[0]
+    let property = control.field
+    if (question === 'mmdistbanks') {
+      //Banks and ATMs have special dynamic fields for filtering
+      const {bankFilter, atmFilter} = this.qn2
+      const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
+      if (filterField)
+        property = filterField
+    }
 
-    //Banks and ATMs have special dynamic fields for filtering
-    const {bankFilter, atmFilter, bankRange, atmRange} = this.filters
-    const filterField = id.indexOf('bank') >= 0 ? bankFilter : atmFilter
-
-    //If there is no special bank/ATM filter, use default filter
-    let property = filterField || control.field
-    let propertyMin = filterField || control.fieldMin || control.field
     const layerIds = []
     layers.forEach(layer => {
       const currentFilter = glLayer._glMap.getFilter(layer.id) || []
       layerIds.push(layer.id)
-
       let newFilter = this.removeFilter(currentFilter, property)
-      newFilter = this.removeFilter(currentFilter, propertyMin)
-      // Remove other bank filters
-      if (id.indexOf('bank') >= 0) {
-        newFilter = this.removeFilter(newFilter, '_bank_')
-        newFilter = this.removeFilter(newFilter, '_distanceFromBank')
-        if (selection[1] <= atmRange[0] || selection[0] >= atmRange[1]) {
-          // Invalid range clear atm selection
-          newFilter = this.removeFilter(newFilter, '_distanceFromATM')
-          this.filters.atmRange = defaultRange
-        }
-        this.filters = {...this.filters, bankRange: selection}
-      }
-      // Remove other atm filters
-      if (id.indexOf('atm') >= 0) {
-        newFilter = this.removeFilter(newFilter, '_atm_')
-        newFilter = this.removeFilter(newFilter, '_distanceFromATM')
-        if (selection[1] <= bankRange[0] || selection[0] >= bankRange[1]) {
-          // Invalid range clear atm selection
+
+      if (question === 'mmdistbanks') {
+        const {bankRange, atmRange} = this.qn2
+        // Remove other bank filters
+        if (id.indexOf('bank') >= 0) {
+          newFilter = this.removeFilter(newFilter, '_bank_')
           newFilter = this.removeFilter(newFilter, '_distanceFromBank')
-          this.filters.atmRange = defaultRange
+          if (selection[1] <= atmRange[0] || selection[0] >= atmRange[1]) {
+            // Invalid range clear atm selection
+            newFilter = this.removeFilter(newFilter, '_distanceFromATM')
+            this.qn2.atmRange = defaultRange
+          }
+          this.qn2 = {...this.qn2, bankRange: selection}
         }
-        this.filters = {...this.filters, atmRange: selection}
+        // Remove other atm filters
+        if (id.indexOf('atm') >= 0) {
+          newFilter = this.removeFilter(newFilter, '_atm_')
+          newFilter = this.removeFilter(newFilter, '_distanceFromATM')
+          if (selection[1] <= bankRange[0] || selection[0] >= bankRange[1]) {
+            // Invalid range clear atm selection
+            newFilter = this.removeFilter(newFilter, '_distanceFromBank')
+            this.qn2.atmRange = defaultRange
+          }
+          this.qn2 = {...this.qn2, atmRange: selection}
+        }
       }
-      const filter = [...newFilter, ['>=', propertyMin, selection[0]], ['<=', property, selection[1]]]
+
+      const filter = [...newFilter, ['>=', property, selection[0]], ['<=', property, selection[1]]]
       glLayer._glMap.setFilter(layer.id, filter)
     })
 
     if (question === 'mmdistbanks')
-      this.sortBanksAndATMs(selection[0], selection[1])
+      this.fetchMMDistFromBanks(selection[0], selection[1])
   }
 
-  setFilterChoice (filter, routeParams) {
+  setChoiceFilter (filter, routeParams) {
     const {country} = routeParams
     const {question, id, choice = {}} = filter
     const {selected, multiSelected} = choice
@@ -344,11 +353,11 @@ class FSPMap extends Component {
       let suffix = control.field
       let choiceRange = selected ? `${suffix}${selected}` : undefined
       if (suffix.indexOf('_bank_') >= 0) {
-        this.filters = {...this.filters, bankFilter: choiceRange || '_distanceFromBank'}
-        this.setFilter({...filter, selection: this.filters.bankRange}, routeParams)
+        this.qn2 = {...this.qn2, bankFilter: choiceRange || '_distanceFromBank'}
+        this.setRangeFilter({...filter, selection: this.qn2.bankRange}, routeParams)
       } else {
-        this.filters = {...this.filters, atmFilter: choiceRange || '_distanceFromATM'}
-        this.setFilter({...filter, selection: this.filters.atmRange}, routeParams)
+        this.qn2 = {...this.qn2, atmFilter: choiceRange || '_distanceFromATM'}
+        this.setRangeFilter({...filter, selection: this.qn2.atmRange}, routeParams)
       }
     } else if (question === 'popnbankatm') {
       console.log('Filters on qn 3', multiSelected)
@@ -363,7 +372,7 @@ class FSPMap extends Component {
         }
         else
           this.removeCustomLayers()
-      } else if (id === 'qn4-operator-selector') {
+      } else if (id === 'qn4-operator-selector' && this.currFSP) {
         console.log('Switch Operator', choice)
         this.createFSPMap(this.fspData, this.currFSP, multiSelected)
       }
@@ -388,7 +397,7 @@ class FSPMap extends Component {
       })
   }
 
-  sortBanksAndATMs (min, max) {
+  fetchMMDistFromBanks (min, max) {
     request
       .get(`${settings['vt-source']}/bankatm/${min}/${max}`)
       .set('Accept', 'application/json')

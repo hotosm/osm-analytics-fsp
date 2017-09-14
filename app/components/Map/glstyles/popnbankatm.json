@@ -4,7 +4,7 @@
     "osm-popnbankatm-raw": {
       "type": "vector",
       "tiles": [
-        "{{server}}/popnbankatm/{z}/{x}/{y}.pbf"
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
       ],
       "minzoom": 13,
       "maxzoom": 14
@@ -12,7 +12,7 @@
     "osm-popnbankatm-aggregated": {
       "type": "vector",
       "tiles": [
-        "{{server}}/popnbankatm/{z}/{x}/{y}.pbf"
+        "{{server}}/mobilemoney/{z}/{x}/{y}.pbf"
       ],
       "minzoom": 0,
       "maxzoom": 12
@@ -50,12 +50,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           1
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           100
         ]
       ]
@@ -74,12 +74,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           100
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           200
         ]
       ]
@@ -98,12 +98,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           200
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           300
         ]
       ]
@@ -122,12 +122,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           300
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           400
         ]
       ]
@@ -147,12 +147,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           400
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           500
         ]
       ]
@@ -171,12 +171,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           500
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           800
         ]
       ]
@@ -195,12 +195,12 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           800
         ],
         [
           "<",
-          "_populationDensity",
+          "_population",
           1000
         ]
       ]
@@ -219,7 +219,7 @@
         "all",
         [
           ">=",
-          "_populationDensity",
+          "_population",
           1000
         ]
       ]

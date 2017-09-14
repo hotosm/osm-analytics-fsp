@@ -26,10 +26,161 @@ function generateColors (lightest = '#fafa6e', darkest = '#2A4858', steps = 6) {
     .mode('lch').colors(steps)
 }
 
+// Sample highlight layer
+const highlights = [
+  {
+    'id': 'data-aggregated-highlight-0',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[10, 0.1], [13, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['<', '_count', 50]
+    ]
+  },
+  {
+    'id': 'data-aggregated-highlight-1',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[8, 0.1], [11, 1.0], [12, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['>=', '_count', 50],
+      ['<', '_count', 200]
+    ]
+  },
+  {
+    'id': 'data-aggregated-highlight-2',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[6, 0.1], [9, 1.0], [12, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['>=', '_count', 200],
+      ['<', '_count', 800]
+    ]
+  },
+  {
+    'id': 'data-aggregated-highlight-3',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[4, 0.1], [7, 1.0], [12, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['>=', '_count', 800],
+      ['<', '_count', 3200]
+    ]
+  },
+  {
+    'id': 'data-aggregated-highlight-4',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[2, 0.1], [5, 1.0], [12, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['>=', '_count', 3200],
+      ['<', '_count', 12800]
+    ]
+  },
+  {
+    'id': 'data-aggregated-highlight-5',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[0, 0.1], [3, 1.0], [12, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['>=', '_count', 12800],
+      ['<', '_count', 51200]
+    ]
+  },
+  {
+    'id': 'data-aggregated-highlight-6',
+    'type': 'fill',
+    'source': 'osm-data-aggregated',
+    'source-layer': 'osm',
+    'maxzoom': 12.01,
+    'paint': {
+      'fill-color': '#5CBAD8',
+      'fill-antialias': false,
+      'fill-opacity': {
+        'base': 1,
+        'stops': [[0, 1.0], [12, 1.0]]
+      }
+    },
+    'filter': ['==', '_timestamp', -1],
+    'densityFilter': ['all',
+      ['>=', '_count', 51200]
+    ]
+  }
+]
+
 function createFeature (data, colorRange, _prop, geometry) {
   const colors = generateColors(colorRange[0], colorRange[1], 6)
-  const range = [[0, 50], [50, 200], [200, 500], [500, 1000], [1000, 5000], [5000, 10000]]//createRange(0, max, max / steps)
-  const style = generateStyle(data.id, colors, getRanges(range), _prop, geometry)
+  const ranges = [[0, 50], [50, 200], [200, 800], [800, 3200], [1000, 5000], [5000, 10000], [10000]]//createRange(0, max, max / steps)
+  const stops = [
+    [[10, 0.1], [13, 1]],
+    [[8, 0.1], [11, 1], [12, 1]],
+    [[6, 0.1], [9, 1], [12, 1]],
+    [[4, 0.1], [7, 1], [12, 1]],
+    [[2, 0.1], [5, 1], [12, 1]],
+    [[0, 0.1], [3, 1], [12, 1]],
+    [[0, 1], [12, 1]]
+  ]
+  const style = generateStyle(data, colors, ranges, stops, _prop, geometry)
   console.log('\n')
   console.log('***Operation Successful***'.green)
   console.log('\n')
@@ -51,7 +202,7 @@ function createFeature (data, colorRange, _prop, geometry) {
   })
 }
 
-function generateStyle (feature, colors, ranges, _prop, geometry) {
+function generateStyle (feature, colors, ranges, stops, _prop, geometry) {
   const fColor = colors[3]
   const baseLayer = (geometry === 'LineString') ? {
     'id': 'layer-raw',
@@ -72,7 +223,7 @@ function generateStyle (feature, colors, ranges, _prop, geometry) {
     'source-layer': 'osm',
     'paint': {'fill-color': fColor, 'fill-opacity': 1}
   } : {
-    'id': 'pois-raw',
+    'id': 'layer-raw',
     'type': 'circle',
     'source': 'osm-data-raw',
     '_description': feature.description,
@@ -82,14 +233,14 @@ function generateStyle (feature, colors, ranges, _prop, geometry) {
       'circle-opacity': 1
     }
   }
-
+  console.log({geometry, baseLayer})
   const style = {
     'version': 8,
     'sources': {
       'osm-data-raw': {
         'type': 'vector',
         'tiles': [
-          `{{server}}/${feature}/{z}/{x}/{y}.pbf`
+          `{{server}}/${feature.id}/{z}/{x}/{y}.pbf`
         ],
         'minzoom': 13,
         'maxzoom': 14
@@ -97,7 +248,7 @@ function generateStyle (feature, colors, ranges, _prop, geometry) {
       'osm-data-aggregated': {
         'type': 'vector',
         'tiles': [
-          `{{server}}/${feature}/{z}/{x}/{y}.pbf`
+          `{{server}}/${feature.id}/{z}/{x}/{y}.pbf`
         ],
         'minzoom': 0,
         'maxzoom': 12
@@ -106,28 +257,41 @@ function generateStyle (feature, colors, ranges, _prop, geometry) {
     'layers': [baseLayer]
   }
 
-  const makeStyle = (id, base, start, end, color) => {
-    const obj = {}
+  const makeStyle = (id, base, start, end, color, stop, isLast) => {
+    const obj = {'type': 'fill',"maxzoom": 12.01}
     Object.assign(obj, base)
-    obj['id'] = `${base.id}-${id}`
+    obj['id'] = `data-aggregated-${id}`
     obj['source'] = 'osm-data-aggregated'
     obj['paint'] = {
-      'fill-color': color, 'fill-opacity': 0.8,
+      'fill-color': color, 'fill-opacity': {
+        'base': 1, 'stops': stop
+      },"fill-antialias": false,
     }
-    obj['filter'] = [
-      'all', ['>=', _prop, start], ['<', _prop, end]
-    ]
+    if (isLast)
+      obj['filter'] = [
+        'all', ['>', _prop, start]
+      ]
+    else
+      obj['filter'] = [
+        'all', ['>=', _prop, start], ['<', _prop, end]
+      ]
     return obj
   }
 
   for (let i = 0; i < ranges.length; i++) {
     const range = ranges[i]
     const color = colors[i]
+    const stop = stops[i]
     const id = i + 1
+    //Track last layer
+    const isLast = id === ranges.length
     style.layers.push(
-      makeStyle(id, baseLayer, range[0], range[1], color)
+      makeStyle(id, baseLayer, range[0], range[1], color, stop, isLast)
     )
   }
+  highlights.forEach(layer => {
+    style.layers.push(layer)
+  })
   return style
 }
 
@@ -136,17 +300,17 @@ const defaultGeometry = 'Point'
 const defaultProperty = '_count'
 const props = {}
 rl.question('Enter Feature/tag name: '.cyan, function (tag) {
-  props['id'] = tag
-  rl.question(`Enter description: `.cyan, function (desc) {
-    props['description'] = desc || tag
-    rl.question(`Enter altText: `.cyan, function (desc) {
-      props['altText'] = desc || tag
-      rl.question(`Enter geometry type: ( Point | LineString | Polygon) : `.cyan, function (_geometry) {
-        const geometry = _geometry | defaultGeometry
-        rl.question(`Enter color range: |${defaultColors}`.cyan, function (_range) {
-          const range = (_range || defaultColors).split(',')
-          rl.question(`Enter color steps: | ${defaultProperty}`.cyan, function (_steps) {
-            const _prop = _steps || defaultProperty
+  props['id'] = tag.trim()
+  rl.question(`Enter description:  will default to '${tag}': `.cyan, function (desc) {
+    props['description'] = (desc || tag).trim()
+    rl.question(`Enter altText: will default to '${tag}':  `.cyan, function (altText) {
+      props['altText'] = altText || tag
+      rl.question(`Enter geometry type: ( Point | LineString | Polygon): will default to '${defaultGeometry}': `.cyan, function (_geometry) {
+        const geometry = (_geometry || defaultGeometry).trim()
+        rl.question(`Enter color range: will default to '${defaultColors}': `.cyan, function (_range) {
+          const range = (_range || defaultColors).trim().split(',')
+          rl.question(`Enter property : will default to '${defaultProperty}': `.cyan, function (_steps) {
+            const _prop = (_steps || defaultProperty).trim()
             createFeature(props, range, _prop, geometry)
             rl.close()
           })

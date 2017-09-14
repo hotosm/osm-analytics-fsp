@@ -34,11 +34,14 @@ class FSPBar extends Component {
         return {...ctr}
     })
     this.setState({data: {...data, controls}})
-    this.props.statsActions.setFSPFilter({country, question, id, selection, category})
+    this.props.statsActions.setFSPRangeFilter({country, question, id, selection, category})
+
     if (question === 'mmdistbanks') {
       const otherSelector = Object.keys(this.mySelectors)
         .filter(key => key !== id)
         .map(key => this.mySelectors[key])[0]
+      if (!otherSelector)
+        return
       const oSelection = otherSelector.state.selection
       const oMin = oSelection[0]
       const oMax = oSelection[1]
@@ -52,7 +55,7 @@ class FSPBar extends Component {
   }
 
   onChoiceChanged (country, question, id, choice, category) {
-    this.props.statsActions.setFSPFilterChoice({country, question, id, choice, category})
+    this.props.statsActions.setFSPChoiceFilter({country, question, id, choice, category})
   }
 
   render () {
@@ -86,7 +89,6 @@ class FSPBar extends Component {
                                  }}
                                  onSelectionChanged={(range) => {
                                    this.onRangeChanged(country, question, id, range, category)
-
                                  }}
                   />
                 </div>
