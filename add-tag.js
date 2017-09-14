@@ -197,7 +197,7 @@ function createFeature (data, colorRange, _prop, geometry) {
     }
     console.log('\n')
     console.log('TODO'.cyan)
-    console.log(`Copy '${dir}/${data.id}.json' to './app/components/glstyles/'`.magenta)
+    console.log(`Copy '${dir}/${data.id}.json' to './app/components/Map/glstyles/'`.magenta)
     console.log('\n')
   })
 }
@@ -258,8 +258,10 @@ function generateStyle (feature, colors, ranges, stops, _prop, geometry) {
   }
 
   const makeStyle = (id, base, start, end, color, stop, isLast) => {
-    const obj = {'type': 'fill',"maxzoom": 12.01}
+    const obj = {}
     Object.assign(obj, base)
+    obj['type'] = 'fill'
+    obj['maxzoom'] = 12.01
     obj['id'] = `data-aggregated-${id}`
     obj['source'] = 'osm-data-aggregated'
     obj['paint'] = {

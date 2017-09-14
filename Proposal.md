@@ -1,6 +1,6 @@
-# Proposal: Adding Thematic Analysis to OSMA [OSM Analytics](http://osm-analytics.org/)
+# Proposal: Adding Thematic Analysis to [OSM Analytics](http://osm-analytics.org/)
 
-Author(s): Timothy Kasasa, Co-Author Name
+Author(s): Timothy Kasasa(timothyk@laboremus.no), Benjamin Lutaaya(benjamin@laboremus.no)
 
 Last updated: 14th Sept 2017
 
