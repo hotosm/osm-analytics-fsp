@@ -65,7 +65,7 @@ During the crunching process, the cruncher automatically picks aup all files pla
 {
     "geometry": "LineString",
     "tag": "waterway",
-    "foctor": 32,
+    "factor": 32,
     "experience": {
         "file": "./experiences.json",
         "field": "waterways"
