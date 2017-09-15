@@ -1,0 +1,618 @@
+{
+  "version": 8,
+  "sources": {
+    "osm-data-raw": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/power/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 13,
+      "maxzoom": 14
+    },
+    "osm-data-aggregated": {
+      "type": "vector",
+      "tiles": [
+        "{{server}}/power/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 0,
+      "maxzoom": 12
+    }
+  },
+  "layers": [
+    {
+      "id": "layer-raw",
+      "type": "circle",
+      "source": "osm-data-raw",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "circle-color": "#00968e",
+        "circle-opacity": 1
+      }
+    },
+    {
+      "id": "data-aggregated-1",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#fafa6e",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              0.1
+            ],
+            [
+              13,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          0
+        ],
+        [
+          "<",
+          "_count",
+          50
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-2",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#9cdf7c",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              8,
+              0.1
+            ],
+            [
+              11,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          50
+        ],
+        [
+          "<",
+          "_count",
+          200
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-3",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#4abd8c",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              6,
+              0.1
+            ],
+            [
+              9,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          200
+        ],
+        [
+          "<",
+          "_count",
+          800
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-4",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#00968e",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              7,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          800
+        ],
+        [
+          "<",
+          "_count",
+          3200
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-5",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#106e7c",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              2,
+              0.1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          1000
+        ],
+        [
+          "<",
+          "_count",
+          5000
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-6",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-color": "#2a4858",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              0.1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          5000
+        ],
+        [
+          "<",
+          "_count",
+          10000
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-7",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "_description": "power",
+      "source-layer": "osm",
+      "paint": {
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "maxzoom": 12.01,
+      "filter": [
+        "all",
+        [
+          ">",
+          "_count",
+          10000
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-0",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              0.1
+            ],
+            [
+              13,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          "<",
+          "_count",
+          50
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-1",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              8,
+              0.1
+            ],
+            [
+              11,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          50
+        ],
+        [
+          "<",
+          "_count",
+          200
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-2",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              6,
+              0.1
+            ],
+            [
+              9,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          200
+        ],
+        [
+          "<",
+          "_count",
+          800
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-3",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              7,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          800
+        ],
+        [
+          "<",
+          "_count",
+          3200
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-4",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              2,
+              0.1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          3200
+        ],
+        [
+          "<",
+          "_count",
+          12800
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-5",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              0.1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          12800
+        ],
+        [
+          "<",
+          "_count",
+          51200
+        ]
+      ]
+    },
+    {
+      "id": "data-aggregated-highlight-6",
+      "type": "fill",
+      "source": "osm-data-aggregated",
+      "source-layer": "osm",
+      "maxzoom": 12.01,
+      "paint": {
+        "fill-color": "#5CBAD8",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              1
+            ],
+            [
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "==",
+        "_timestamp",
+        -1
+      ],
+      "densityFilter": [
+        "all",
+        [
+          ">=",
+          "_count",
+          51200
+        ]
+      ]
+    }
+  ]
+}

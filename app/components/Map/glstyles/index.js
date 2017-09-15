@@ -2,8 +2,11 @@ import settings from '../../../settings/settings'
 import { filters as filterOptions } from '../../../settings/options'
 
 const filterStyles = {}
-filterOptions.forEach(({id}) => {
-  filterStyles[id] = require(`./${id}.json`)
+filterOptions.forEach(({id, js}) => {
+  if(js)
+    filterStyles[id] = require(`./${id}`).default
+  else
+    filterStyles[id] = require(`./${id}.json`)
 })
 
 export default function getStyle (filters, options) {

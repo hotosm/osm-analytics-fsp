@@ -160,7 +160,7 @@ export const selectedBanks = [
     ]
   }
 ]
-
+const disclaimer = "https://github.com/hotosm/osm-analytics-fsp/blob/master/README.md"
 export const menu = [
   {
     id: 'uganda',
@@ -192,9 +192,26 @@ export const menu = [
 
 export const controls = {
   uganda: {
-    region:'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@',
+    region: 'polygon:{isbEcr|Tzmi@mmi@rvq@xyWheaA}|T~tbAvcm@tbZli}EagkBxkr@hbdGt`kGwfAtur@~~n@nzqAzm]xnpF_tOvrn@mk^wyMkl_@|qZqleAqjiAufqA_fOklhRrtA|_CwwuEmpqB}|yD{xx@yn_@c{d@wftA|wEgw}CpbaByjrCoEi`jAxlx@add@tm`@eosAxl{Axq|AhpsAecRlmsBdxRlbv@|wm@',
     mobilemoney: {
       title: 'Mobile money agents in relation to population and economic activity',
+      tooltip: {
+        title: '',
+        body: `
+        <p>
+            As a financial service provider I can then decide to or not set up a mobile money agent within that radius.
+            <br/>This decision will of course be based on how many people are found in that radius as well as the type
+            of economic activity.
+            <ul>
+              <li>Grid with population and economic activity weighted figure (determined by no. of buildings, commercial
+                buildings and proximity to primary roads).
+              </li>
+              <li>Users will drill down to identify cells that have specific populations and economic activity.</li>
+            </ul>
+          </p>
+          <a href="${disclaimer}" target="_blank"><b>View disclaimer</b></a>
+        `
+      },
       legend: 'Number of Agents',
       controls: [
         {
@@ -228,6 +245,21 @@ export const controls = {
 
       title: 'Show Mobile Money agents that are (at least) a distance from a bank or ATM',
       legend: 'Number of Agents',
+      tooltip: {
+        title: '',
+        body: `
+        <p>
+            As a financial service provider I can then decide to or not set up a bank branch closer to the mobile money 
+            agents for them to be able to deposit the money that they collect from the mobile money users
+            <ul>
+              <li>Users can filter to identify areas with the number of MM agents at specified distances from a bank, 
+              no. within &lt; 1km, 1-5, 5-10 km, and 10km+ (in addition to free form input for distance)
+              </li>
+            </ul>
+          </p>
+          <a href="${disclaimer}" target="_blank"><b>View disclaimer</b></a>
+        `
+      },
       controls: [
         {
           id: 'distance-from-bank',
@@ -274,6 +306,20 @@ export const controls = {
     popnbankatm: {
       title: 'Show location of selected banks in relation to population density and economic activity',
       legend: 'Population density',
+      tooltip: {
+        header: '',
+        body: `
+        <p>
+            As a financial service provider I can then decide to or not set up an atm or bank branch based on the
+             presence of my competitor financial service providers.
+            <ul>
+              <li>Users can select the type of service (ATM/branch) and the FSP </li>
+              <li>The map grid will show all grid cells in which the services for each selected FSP will appear. </li>
+            </ul>
+          </p>
+          <a href="${disclaimer}" target="_blank"><b>View disclaimer</b></a>
+        `
+      },
       controls: [
         /*
         {
@@ -308,6 +354,19 @@ export const controls = {
     fspdistribution: {
       title: 'Show location of Financial Service Provider(FSP) in relation to people per FSP ',
       legend: 'People per FSP',
+      tooltip: {
+        header: '',
+        body: `
+        <p>
+            As a financial service provider I can evaluate the areas with few competitors
+            <ul>
+              <li>Users can filter a gridded map to display areas with a specific number of people per MM Agent. </li>
+              <li>This can be split according to provider/network </li>
+            </ul>
+          </p>
+          <a href="${disclaimer}" target="_blank"><b>View disclaimer</b></a>
+        `
+      },
       controls: [
         {
           id: 'fsp-selector',

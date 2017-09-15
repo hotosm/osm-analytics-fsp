@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as request from 'superagent'
 import moment from 'moment'
-import style from './style.css'
+import './style.css'
 import { filters as featureTypeOptions } from '../../settings/options'
 import settings from '../../settings/settings'
 

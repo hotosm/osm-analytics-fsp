@@ -63,16 +63,23 @@ Simply create the config file , and place it in `fsp-config` folder,
 During the crunching process, the cruncher automatically picks aup all files placed in to config folder and processes them
 ```json
 {
-    "geometry": "LineString",
-    "tag": "waterway",
-    "foctor": 32,
+    "name":"power",
+    "geometry": "Point",
+    "tag": "power",
+    "factor": 32,
     "experience": {
         "file": "./experiences.json",
-        "field": "waterways"
+        "field": "power"
     }
 }
 ```
-This bring down the steps from 4 to 1, the generated mbtiles are placed in the results directory and automatically picked up by the tile server
+This bring down the steps from 4 to 1, as see [here](https://github.com/ekastimo/osm-analytics-cruncher/commit/87eeb2d5784a7def46878515fd1b2fb2c389ac9d) 
+### How this works
+1. When the cruncher script is run, it picks up all `.json` files on the `osm-filters` directory
+2. It then extracts the `name` and `factor` and generates a new config file.
+3. The config file has all features to crunch and is thus passed to the `experience.sh` file
+4. Each tag in the is then processed and all results are placed in the `results` folder
+5. The server then dynamically pick up all mbtiles in the results folder and makes them available to the client
 
 ### Front end
 
@@ -95,13 +102,6 @@ The npm script however does not edit the code but guides the user on where to pl
 ```bash
 npm run add-tag
 ```
-
-
-## FSP OSMA Implementation
-
-### Backend
-
-### Frontend
 
 ## Open issues
 
