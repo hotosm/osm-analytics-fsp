@@ -48,7 +48,13 @@ export const filters = [
     description: 'POIs',
     altText: 'Points with an amenity=* tag (e.g. schools, restaurants,  places of worship, drinking water, banks, fuel stations, etc.)',
     hidden: true
+  },
+  {
+    "id": "power",
+    "description": "Electricity poles",
+    "altText": "Power"
   }
+
 ]
 
 export const overlays = [
