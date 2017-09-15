@@ -17,21 +17,31 @@ export const filters = [
   {
     id: 'mobilemoney',
     description: 'Mobile Money',
-    altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
+    altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)',
+    hidden: true
   },
   {
     id: 'mmdistbanks',
     description: 'MM Distance from Banks',
-    altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)'
+    altText: 'Lines with a amenity=mobilemoney tag (waterways, rivers & streams)',
+    hidden: true
   }, {
     id: 'popnbankatm',
     description: 'Population and Economic Activity',
-    altText: 'Population Vs Econominc'
+    altText: 'Population Vs Econominc',
+    hidden: true
   },
   {
     id: 'fspdistribution',
+    description: 'People Per MM Agent',
+    altText: 'People Per MM Agent',
+    hidden: true
+  },
+  {
+    id: 'population',
     description: 'Population',
-    altText: 'Population'
+    altText: 'Population',
+    js:true
   },
   {
     id: 'pois',
